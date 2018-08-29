@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhx.gmms.modules.sys.right.dao.SysRightDao" >
+  <resultMap id="BaseResultMap" type="com.zhx.gmms.modules.sys.right.bean.SysRight" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="PID" property="pid" jdbcType="VARCHAR" />
+    <result column="RIGHT_NAME" property="rightName" jdbcType="VARCHAR" />
+    <result column="RIGHT_URL" property="rightUrl" jdbcType="VARCHAR" />
+    <result column="RIGHT_DESC" property="rightDesc" jdbcType="VARCHAR" />
+    <result column="IS_LEAF" property="isLeaf" jdbcType="VARCHAR" />
+    <result column="ICON" property="icon" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="VARCHAR" />
+    <result column="SEQ" property="seq" jdbcType="VARCHAR" />
+    <result column="CREATOR" property="creator" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATOR" property="updator" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, PID, RIGHT_NAME, RIGHT_URL, RIGHT_DESC, IS_LEAF, ICON, IS_DEL, SEQ, CREATOR, 
+    CREATE_TIME, UPDATOR, UPDATE_TIME
+  </sql>
+  
+  <!-- 主键查询 -->
+  <select id="get" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_right
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 查询用户的权限信息 -->
+  <select id="selectRights" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select ri.*
+  	from sys_right ri 
+  	left join sys_role_right rr on rr.right_id = ri.id 
+  	left join sys_user_role ur on rr.role_id = ur.role_id 
+  	left join sys_role r on rr.role_id = r.id 
+  	where ur.user_id = #{user_id} and r.is_del = '0'
+  </select>
+  
+  <!-- 主键删除 -->
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from sys_right
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 新增 -->
+  <insert id="insert" parameterType="com.zhx.gmms.modules.sys.right.bean.SysRight" >
+    insert into sys_right
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="pid != null" >
+        PID,
+      </if>
+      <if test="rightName != null" >
+        RIGHT_NAME,
+      </if>
+      <if test="rightUrl != null" >
+        RIGHT_URL,
+      </if>
+      <if test="rightDesc != null" >
+        RIGHT_DESC,
+      </if>
+      <if test="isLeaf != null" >
+        IS_LEAF,
+      </if>
+      <if test="icon != null" >
+        ICON,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="seq != null" >
+        SEQ,
+      </if>
+      <if test="creator != null" >
+        CREATOR,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="updator != null" >
+        UPDATOR,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=VARCHAR},
+      </if>
+      <if test="rightName != null" >
+        #{rightName,jdbcType=VARCHAR},
+      </if>
+      <if test="rightUrl != null" >
+        #{rightUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="rightDesc != null" >
+        #{rightDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="isLeaf != null" >
+        #{isLeaf,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        #{seq,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updator != null" >
+        #{updator,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 更新 -->
+  <update id="update" parameterType="com.zhx.gmms.modules.sys.right.bean.SysRight" >
+    update sys_right
+    <set >
+      <if test="pid != null" >
+        PID = #{pid,jdbcType=VARCHAR},
+      </if>
+      <if test="rightName != null" >
+        RIGHT_NAME = #{rightName,jdbcType=VARCHAR},
+      </if>
+      <if test="rightUrl != null" >
+        RIGHT_URL = #{rightUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="rightDesc != null" >
+        RIGHT_DESC = #{rightDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="isLeaf != null" >
+        IS_LEAF = #{isLeaf,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null" >
+        ICON = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        SEQ = #{seq,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        CREATOR = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updator != null" >
+        UPDATOR = #{updator,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

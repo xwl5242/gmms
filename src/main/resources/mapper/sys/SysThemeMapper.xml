@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhx.gmms.modules.sys.theme.dao.SysThemeDao" >
+  <resultMap id="BaseResultMap" type="com.zhx.gmms.modules.sys.theme.bean.SysTheme" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="SIDEBAR" property="sidebar" jdbcType="VARCHAR" />
+    <result column="NAVBAR" property="navbar" jdbcType="VARCHAR" />
+    <result column="NAVBAR_INVERSE" property="navbarInverse" jdbcType="VARCHAR" />
+    <result column="THEME_COLOR" property="themeColor" jdbcType="VARCHAR" />
+    <result column="MENU_DISPLAY" property="menuDisplay" jdbcType="VARCHAR" />
+    <result column="MENU_TXT_ICON" property="menuTxtIcon" jdbcType="VARCHAR" />
+    <result column="TAB_FLAG" property="tabFlag" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, SIDEBAR, NAVBAR, NAVBAR_INVERSE, THEME_COLOR, MENU_DISPLAY, MENU_TXT_ICON, TAB_FLAG
+  </sql>
+  
+  <!-- 主键查询 -->
+  <select id="get" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_theme
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 主键删除 -->
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from sys_theme
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 新增 -->
+  <insert id="insert" parameterType="com.zhx.gmms.modules.sys.theme.bean.SysTheme" >
+    insert into sys_theme
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="sidebar != null" >
+        SIDEBAR,
+      </if>
+      <if test="navbar != null" >
+        NAVBAR,
+      </if>
+      <if test="navbarInverse != null" >
+        NAVBAR_INVERSE,
+      </if>
+      <if test="themeColor != null" >
+        THEME_COLOR,
+      </if>
+      <if test="menuDisplay != null" >
+        MENU_DISPLAY,
+      </if>
+      <if test="menuTxtIcon != null" >
+        MENU_TXT_ICON,
+      </if>
+      <if test="tabFlag != null" >
+        TAB_FLAG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="sidebar != null" >
+        #{sidebar,jdbcType=VARCHAR},
+      </if>
+      <if test="navbar != null" >
+        #{navbar,jdbcType=VARCHAR},
+      </if>
+      <if test="navbarInverse != null" >
+        #{navbarInverse,jdbcType=VARCHAR},
+      </if>
+      <if test="themeColor != null" >
+        #{themeColor,jdbcType=VARCHAR},
+      </if>
+      <if test="menuDisplay != null" >
+        #{menuDisplay,jdbcType=VARCHAR},
+      </if>
+      <if test="menuTxtIcon != null" >
+        #{menuTxtIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="tabFlag != null" >
+        #{tabFlag,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 更新 -->
+  <update id="update" parameterType="com.zhx.gmms.modules.sys.theme.bean.SysTheme" >
+    update sys_theme
+    <set >
+      <if test="sidebar != null" >
+        SIDEBAR = #{sidebar,jdbcType=VARCHAR},
+      </if>
+      <if test="navbar != null" >
+        NAVBAR = #{navbar,jdbcType=VARCHAR},
+      </if>
+      <if test="navbarInverse != null" >
+        NAVBAR_INVERSE = #{navbarInverse,jdbcType=VARCHAR},
+      </if>
+      <if test="themeColor != null" >
+        THEME_COLOR = #{themeColor,jdbcType=VARCHAR},
+      </if>
+      <if test="menuDisplay != null" >
+        MENU_DISPLAY = #{menuDisplay,jdbcType=VARCHAR},
+      </if>
+      <if test="menuTxtIcon != null" >
+        MENU_TXT_ICON = #{menuTxtIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="tabFlag != null" >
+        TAB_FLAG = #{tabFlag,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

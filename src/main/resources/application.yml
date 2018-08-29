@@ -1,0 +1,62 @@
+#tomcat配置
+server:
+  port: 80
+
+#数据源配置
+spring:
+  datasource:
+    name: vmms
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+    #基本配置
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/vmms?useUnicode=true&characterEncoding=UTF-8
+      username: root
+      password: root
+    #监控统计拦截
+      filters: stat
+    #配置初始化大小
+      initial-size: 1
+      min-idle: 1
+      max-active: 20
+    #获取连接等待超时时间
+      max-wait: 60000
+    #间隔多久一次进行检测，检测需要关闭的空闲连接
+      time-between-eviction-runs-millis: 60000
+    #一个连接在池中最小连接时间
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+    #打开PSCache，并指定每个连接上PSCache的大小。oracle设置为true，mysql设置为false，分库分表较多推荐设置
+      pool-prepared-statements: false
+      max-pool-prepared-statement-per-connection-size: 20
+#freemarker后缀修改
+  freemarker:
+    suffix: .html
+    cache: false
+    request-context-attribute: req
+
+#mybatis配置
+mybatis:
+  mapper-locations: classpath:mapper/*/*.xml
+  type-aliases-package: com.zhx.gmms.**.bean
+
+#springboot健康检查配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"       
+        
+#自定义配置属性
+#captch type:gif,png
+captchaType: png
+#captch char num
+captchaCharNum: 4
+
+#日志级别配置
+logging:
+  level:
+    com.zhx.gmms.modulues: debug

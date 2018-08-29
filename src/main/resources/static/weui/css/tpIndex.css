@@ -1,0 +1,53 @@
+html, body {
+  position: relative;
+  height: 100%;
+}
+body {
+  background: #eee;
+  font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+  font-size: 14px;
+  color:#000;
+  margin: 0;
+  padding: 0;
+}
+.swiper-container {
+  width: 100%;
+  height: 90%;
+}
+.swiper-slide {
+  font-size: 18px;
+  background: #eee;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+}
+.my-weui-cells{
+	font-size:15px;
+	margin-top: 0px;
+	background-color:#eee;
+	line-height:1.5
+}
+.my-footer{
+	bottom: 0px;
+	position: absolute;
+	border-top-width: 1px;
+	border-top-style:solid;
+	border-top-color:#e0e0e0;
+	width: 100%
+}
+.my-shade{
+	border-radius:50%;
+	position:absolute;
+	bottom: 0px;
+	left: 13px;
+	height: 50px;
+	width: 50px;
+	z-index: 19920902
+}
