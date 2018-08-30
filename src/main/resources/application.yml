@@ -59,4 +59,4 @@ captchaCharNum: 4
 #日志级别配置
 logging:
   level:
-    com.zhx.gmms.modulues: debug
+    com.zhx.gmms.modules: debug

@@ -163,7 +163,6 @@
         getPath: function () {
             var pathname = location.pathname,
                 title = $('#admui-pageContent').find('title').text();
-            if(!title) title=$('#admui-pageContent').find('div:eq(0)').attr('title');
             if (pathname !== $.ctx+"home") {
                 this.buildTag({name: title, url: pathname});
             }

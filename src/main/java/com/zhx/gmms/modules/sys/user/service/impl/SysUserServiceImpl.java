@@ -81,7 +81,7 @@ public class SysUserServiceImpl implements SysUserService {
 	 * 更新用户的主题信息
 	 */
 	@Transactional(readOnly=false)
-	public int updateTheme(SysTheme sysTheme,String userId) {
+	public SysTheme updateTheme(SysTheme sysTheme,String userId) {
 		int ret = 0;
 		//业务逻辑：如果用户的主题id为-1，则证明用户第一次自定义主题信息，此时需要新增主题信息，并更新用户主题的关联关系。否则，直接更新
 		String themeId = get(userId).getThemeId();
@@ -98,7 +98,7 @@ public class SysUserServiceImpl implements SysUserService {
 			sysTheme.setId(themeId);
 			ret += sysThemeService.editSysTheme(sysTheme);
 		}
-		return ret;
+		return ret>=1?sysTheme:null;
 	}
 	
 }

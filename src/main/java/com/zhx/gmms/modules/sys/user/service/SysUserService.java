@@ -55,6 +55,6 @@ public interface SysUserService {
 	 * @param sysTheme
 	 * @return
 	 */
-	int updateTheme(SysTheme sysTheme,String userId);
+	SysTheme updateTheme(SysTheme sysTheme,String userId);
 
 }

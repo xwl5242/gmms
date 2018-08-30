@@ -217,7 +217,7 @@
                 alertify.theme('bootstrap')
                     .confirm("您确定要删除该菜单吗？", function () {
                         $.ajax({
-                            url: $.ctx + '/menu/delete?menuId=' + ID,
+                            url: location.host+$.ctx + '/menu/delete?menuId=' + ID,
                             type: 'POST',
                             dataType: 'JSON',
                             success: function (data) {
@@ -557,7 +557,8 @@
             var self = this;
 
             $.ajax({
-                url: $.ctx + '/menu/all',
+                url: $.ctx + 'right/list',
+                type:'PATCH',
                 dataType: 'JSON',
                 success: function (data) {
                     self.menuRender(data);
@@ -577,7 +578,6 @@
 
             template.helper('json_str', function (submenu) {
                 submenu = JSON.stringify(submenu);
-
                 return submenu;
             });
             html = template('navMenu', data);
@@ -660,7 +660,7 @@
 
             $('.menu-info').html(html);
 
-            this.getAuth(menuData.id);
+//            this.getAuth(menuData.id);
 
             $('.icp-dd1').iconpicker($.po('iconpicker', {title: '请选择菜单图标'}))
                 .on('iconpickerSelected', function (e) {

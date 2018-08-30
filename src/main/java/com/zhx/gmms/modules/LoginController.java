@@ -43,7 +43,7 @@ public class LoginController extends BaseController {
 	 * @param user
 	 * @return
 	 */
-	@GetMapping("/index")
+	@GetMapping(value={"/index","/",""})
 	public String index(){
 		return "login";
 	}
@@ -70,7 +70,7 @@ public class LoginController extends BaseController {
 	@PostMapping(value="/loginIn")
 	public String loginIn(HttpServletRequest request,HttpServletResponse response,
 			SysUser user,String validCode,boolean needCaptcha,RedirectAttributes model) {
-		logger.info("user login,user info:"+user);
+		logger.info("用户登录，登录用户信息:"+user);
 		String result = "";
 		try {
 			HttpSession session = request.getSession();
@@ -106,6 +106,7 @@ public class LoginController extends BaseController {
 							userService.editUser(editUser);
 							//查询该登录用户的权限信息
 							List<SysRight> rights = userService.queryRights(loginUser.getId());
+							logger.info("登录用户的权限信息："+rights);
 							session.setAttribute(Const.SESSION_RIGHT, RightUtils.menuTreeList(rights, Const.RIGHT_ROOT));//用户的权限
 							session.setAttribute(Const.SESSION_USER, loginUser);//用户信息
 							session.setAttribute(Const.SESSION_USER_ID, loginUser.getId());//用户信息
@@ -114,10 +115,11 @@ public class LoginController extends BaseController {
 								SysTheme theme = userService.getCurUserTheme(loginUser.getThemeId());
 								session.setAttribute(Const.SESSION_THEME,theme);
 								session.setAttribute(Const.SESSION_THEME_JSON,objectMapper.writeValueAsString(theme));
+								logger.info("登录用户的主题信息："+theme);
 							}
 //							session.setAttribute(Const.SESSION_RIGHT_CHANGED, false);//用户名称
 //							session.setAttribute(Const.SESSION_RIGHT_CHANGED_MENU, "");//用户名称
-							logger.info("login success,user info:"+loginUser);
+							logger.info("用户登录成功，用户信息："+loginUser);
 							//登录成功跳转到首页
 							return "redirect:/home";
 						}else{

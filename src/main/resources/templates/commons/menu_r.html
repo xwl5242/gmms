@@ -2,20 +2,12 @@
 <#assign level=(level!0)+1>
 <#list treeList as right>
 	<#assign isUrl=(right.rightUrl=='#')?string('false','true')>
-	<#if level==1>				
-		<li class="site-menu-item ${(right.childNode?size gt 0)?string('has-sub','') } ">
-        	<a href="${ctx}/${(isUrl=='true')?string(right.rightUrl,'')}" ${(isUrl=='true')?string(' data-pjax target="_blank"','') }>
-                <i class="site-menu-icon fa-laptop" aria-hidden="true"></i>
-                <span class="site-menu-title">${right.rightName }</span>
-                <span class="site-menu-arrow"></span>
-            </a>
-        <#if right.childNode?size gt 0>
-        	<ul class="site-menu-sub">
-			<li class="site-menu-item ${(right.childNode?length gt 0)?string('has-sub','') } ">
-        </#if>
-	</#if>					
-	<#if level==2>						
-		<a href="${ctx}/${(isUrl=='true')?string(right.rightUrl,'')}" ${(isUrl=='true')?string(' data-pjax target="_blank"','') }>
+	<#assign hrefUrl=(right.rightUrl=='#')?string('javascript:;',req.getContextPath()+'/'+right.rightUrl)>
+	<li class="site-menu-item ${(right.childNode?size gt 0)?string('has-sub','')} ">
+		<a href="${hrefUrl}" ${(isUrl=='true')?string(' data-pjax target="_blank"','') }>
+			<#if level==1>
+				<i class="site-menu-icon ${right.icon}" aria-hidden="true"></i>
+			</#if>
 			<span class="site-menu-title">${right.rightName }</span>
 			<#if right.childNode?size gt 0>
 				<span class="site-menu-arrow"></span>
@@ -23,29 +15,10 @@
 		</a>
 		<#if right.childNode?size gt 0>
 			<ul class="site-menu-sub">
+				<#assign treeList=right.childNode>
+				<#include "menu_r.html">
+				<#assign level=(level!0)-1>
+			</ul>
 		</#if>
-	</#if>							
-	<#if level==3>						
-		<li class="site-menu-item ">
-			<a href="${ctx}/${(isUrl=='true')?string(right.rightUrl,'')}" ${(isUrl=='true')?string(' data-pjax target="_blank"','') }>
-				<span class="site-menu-title">${right.rightName }</span>
-			</a>
-		</li>
-	</#if>		
-	<#if (level==(lastLevel!0)) && (flag == 1)>	
-		<#assign lastLevel=lastLevel-1>
-		</ul>
-	</#if>								
-	<#if (level==(lastLevel!0)) && (flag == 1)>	
-		<#assign lastLevel=lastLevel-1>
-		</li></ul></li>
-	</#if>		
-	<#if right.childNode?size gt 0>				
-		<#assign treeList=right.childNode>
-  		<#include "menu_r.html">
-	<#else>
-		<#assign flag=1>
-		<#assign lastLevel=level+1>
-	</#if>			
+	</li>
 </#list>
-<#assign level=level-1>

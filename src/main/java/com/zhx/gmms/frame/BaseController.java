@@ -62,7 +62,7 @@ public class BaseController {
 	 * @param o
 	 * @return
 	 */
-	public String returnJsonStr(Object o){
+	public String toJson(Object o){
 		String result=null;
 		try{
 			result = objectMapper.writeValueAsString(o);
@@ -80,6 +80,6 @@ public class BaseController {
 	public String returnDataTables(List<?> list){
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("data", list);
-		return returnJsonStr(map);
+		return toJson(map);
 	}
 }
