@@ -121,29 +121,44 @@ public class SysRightServiceImpl implements SysRightService {
 	@Transactional(readOnly=false)
 	public int saveRightByMenuData(MenuData md) {
 		int result = 0;
-		//保存权限
-		SysRight right = new SysRight();
+		//生成uuid，为新增做准备
 		String rightId = UUIDGenerator.getUUID();
-		right.setId(rightId);
+		//配置权限信息
+		SysRight right = new SysRight();
 		right.setRightName(md.getText());
 		right.setRightDesc(md.getText());
 		right.setPid(md.getPid());
 		right.setRightUrl(md.getUrl());
 		right.setIcon(md.getIcon());
-		int maxSeq = rightDao.selectMaxSeq(right.getPid())+5;
-		right.setSeq(maxSeq);
-		result += rightDao.insert(right);
-		//保存权限和角色关系
+		int maxSeq = rightDao.selectMaxSeq(right.getPid());
+		if("add".equals(md.getType())){
+			//新增
+			right.setId(rightId);
+			right.setSeq(maxSeq+5);
+			result += rightDao.insert(right);
+		}else{
+			//修改
+			right.setId(md.getId());
+			right.setSeq(maxSeq);
+			result += rightDao.update(right);
+		}
+		//查询权限和角色关系
 		List<Map<String,String>> list = new ArrayList<Map<String,String>>();
 		List<MenuData.Auth> auths = md.getAuth();
 		if(null!=auths&&auths.size()>0){
 			for(MenuData.Auth auth:auths){
 				Map<String,String> m = new HashMap<String, String>();
 				m.put("id", UUIDGenerator.getUUID());
-				m.put("rightId", rightId);
+				m.put("rightId", right.getId());
 				m.put("roleId", auth.getId());
 				list.add(m);
 			}
+		}
+		if(!"add".equals(md.getType())){
+			//如果是修改，权限角色关系可能也被修改，先删除之前的
+			List<String> rightIds = new ArrayList<String>();
+			rightIds.add(right.getId());
+			rightDao.deleteRightRole(rightIds);
 		}
 		result += rightDao.insertRightRoles(list);
 		return result;

@@ -169,7 +169,8 @@
             $content.on('click', '[data-tag="list-editable"], #addMenuToggle', function (e) {
                 var $item = $(this),
                     data = self.menuData($item.parents("div[data-children]"));
-
+                //判断是新增还是修改，显示对应的标题
+                data.title = $item[0].id?'添加新菜单':'修改菜单';
                 if (data.name === undefined) {
                     data.name = '自定义菜单';
                 }
