@@ -12,5 +12,5 @@ public interface CrudDao<T> {
 	
 	public int update(T t);
 	
-	public int delete(String id);
+	public int delete(List<String> id);
 }

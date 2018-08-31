@@ -80,7 +80,7 @@ public class SysRightController extends BaseController {
 	public String deleteRight(@PathVariable String id){
 		logger.info("删除权限...权限id："+id);
 		int i = rightService.removeRight(id);
-		return toJson(i==1);
+		return toJson(i>0);
 	}
 	
 	/**

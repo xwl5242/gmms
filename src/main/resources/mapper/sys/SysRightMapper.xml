@@ -42,7 +42,14 @@
   <!-- 查询所有权限信息 -->
   <select id="findList" resultMap="BaseResultMap" parameterType="com.zhx.gmms.modules.sys.right.bean.SysRight">
   	select <include refid="Base_Column_List" />
-    from sys_right order by SEQ
+    from sys_right where is_del='0' order by SEQ
+  </select>
+  
+  <!-- findListByPid查询权限根据父id -->
+  <select id="findListByPid" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List" />
+    from sys_right
+    where pid=#{pid}
   </select>
   
   <!-- 查询权限角色 -->
@@ -55,9 +62,24 @@
   </select>
   
   <!-- 主键删除 -->
-  <delete id="delete" parameterType="java.lang.String" >
+  <delete id="delete" parameterType="java.util.List" >
     delete from sys_right
-    where ID = #{id,jdbcType=VARCHAR}
+    where ID in (
+    <foreach collection="list" item="id" index="index"
+        separator=",">
+        #{id}
+    </foreach>)
+  </delete>
+  
+  <!-- 删除权限和角色的关联关系 -->
+  <delete id="deleteRightRole" parameterType="java.util.List">
+  	delete from sys_role_right 
+  	where right_id in (
+	  	<foreach collection="list" item="rightId" index="index"
+	        separator=",">
+	        #{rightId}
+	    </foreach>
+  	)
   </delete>
   
   <!-- insertRightRoles批量新增权限角色 -->

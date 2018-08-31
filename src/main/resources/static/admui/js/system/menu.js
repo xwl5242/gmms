@@ -351,7 +351,7 @@
                     .confirm("您确定要删除该菜单吗？", function () {
                         if (ID !== "") {
                             $.ajax({
-                                url: $.ctx + '/menu/delete?menuId=' + ID,
+                                url: $.ctx + 'right/delete/' + ID,
                                 type: 'POST',
                                 dataType: 'JSON',
                                 success: function (data) {

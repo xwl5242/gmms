@@ -36,4 +36,18 @@ public interface SysRightDao extends CrudDao<SysRight>{
 	 */
 	int selectMaxSeq(String pid);
 
+	/**
+	 * 查询权限根据父id
+	 * @param pid
+	 * @return
+	 */
+	List<SysRight> findListByPid(String pid);
+
+	/**
+	 * 删除权限和角色的关联关系
+	 * @param rightIds
+	 * @return
+	 */
+	int deleteRightRole(List<String> rightIds);
+
 }

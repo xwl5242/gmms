@@ -45,6 +45,15 @@ public class SysRightServiceImpl implements SysRightService {
 	}
 
 	/**
+	 * 查询权限根据父id
+	 * @param pid
+	 * @return
+	 */
+	public List<SysRight> findListByPid(String pid){
+		return rightDao.findListByPid(pid);
+	}
+	
+	/**
 	 * 获取权限角色
 	 */
 	@Transactional(readOnly=true)
@@ -83,7 +92,27 @@ public class SysRightServiceImpl implements SysRightService {
 	 */
 	@Transactional(readOnly=false)
 	public int removeRight(String id) {
-		return rightDao.delete(id);
+		int i = 0;
+		//递归拿到该菜单的子菜单，子子菜单，子子子菜单...
+		List<String> rightIds = rec(id);
+		rightIds.add(id);
+		//删除本菜单以及子菜单的所有  菜单和权限关系
+		i+=rightDao.delete(rightIds);
+		i+=rightDao.deleteRightRole(rightIds);
+		return i;
+	}
+	
+	private List<String> rec(String pid){
+		List<String> rightIds = new ArrayList<String>();
+		//所有子菜单
+		List<SysRight> rlist = findListByPid(pid);//所有子菜单
+		if(null!=rlist&&rlist.size()>0){
+			for(SysRight r:rlist){
+				rightIds.add(r.getId());
+				rightIds.addAll(rec(r.getId()));
+			}
+		}
+		return rightIds;
 	}
 
 	/**
