@@ -19,4 +19,6 @@ public interface SysUserDao extends CrudDao<SysUser> {
 	 */
 	SysUser selectByUserCode(String userCode);
 
+//	int updateUserQuota(List<Map<String, Object>> lm);
+
 }

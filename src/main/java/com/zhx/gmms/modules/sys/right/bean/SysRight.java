@@ -13,7 +13,7 @@ public class SysRight extends BaseEntity {
 	private String rightDesc;
 	private String icon;
 	private String isLeaf;
-	private String seq;
+	private Integer seq;
 
 	private List<SysRight> childNode;
 
@@ -85,11 +85,11 @@ public class SysRight extends BaseEntity {
 		this.isLeaf = isLeaf;
 	}
 
-	public String getSeq() {
+	public Integer getSeq() {
 		return seq;
 	}
 
-	public void setSeq(String seq) {
+	public void setSeq(Integer seq) {
 		this.seq = seq;
 	}
 

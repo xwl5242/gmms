@@ -57,4 +57,6 @@ public interface SysUserService {
 	 */
 	SysTheme updateTheme(SysTheme sysTheme,String userId);
 
+//	void initQuota();
+
 }

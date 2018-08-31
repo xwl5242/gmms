@@ -28,7 +28,7 @@
 		LAST_LOGIN_TIME, LOGIN_TOTAL, IS_DEL, CREATOR, CREATE_TIME, UPDATOR, UPDATE_TIME,
 		THEME_ID
 	</sql>
-
+	
 	<!-- 主键获取 -->
 	<select id="get" resultMap="BaseResultMap" parameterType="java.lang.String">
 		select
@@ -252,4 +252,14 @@
 		</set>
 		where ID = #{id,jdbcType=VARCHAR}
 	</update>
+	
+	<!-- 	<update id="updateUserQuota" parameterType="java.util.List"> -->
+<!-- 		 <foreach collection="list" item="item" index="index" open="" close="" separator=";"> -->
+<!-- 	        update sys_user -->
+<!-- 	        <set> -->
+<!-- 	            high_quota=${item.q} -->
+<!-- 	        </set> -->
+<!-- 	        where id = ${item.id} -->
+<!-- 	    </foreach>    -->
+<!-- 	</update> -->
 </mapper>

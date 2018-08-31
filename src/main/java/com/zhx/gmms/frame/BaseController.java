@@ -73,6 +73,48 @@ public class BaseController {
 	}
 	
 	/**
+	 * 返回json
+	 * @param isSuccess
+	 * @return
+	 */
+	public String toJson(boolean isSuccess){
+		return toJson(isSuccess, isSuccess?"操作成功！":"操作失败！");
+	}
+	
+	/**
+	 * 返回json
+	 * @return
+	 */
+	public String toJson(boolean isSuccess,String msg){
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("success", isSuccess);
+		map.put("msg",msg);
+		return toJson(map);
+	}
+	
+	/**
+	 * 
+	 * @param isSuccess
+	 * @return
+	 */
+	public String toJson(boolean isSuccess,Map<String,Object> customMap){
+		return toJson(isSuccess,isSuccess?"操作成功！":"操作失败！",customMap);
+	}
+	
+	/**
+	 * 返回json，可拼接自己的key,value信息
+	 * @param customMap
+	 * @return
+	 */
+	public String toJson(boolean isSuccess,String msg,Map<String,Object> customMap){
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("success", isSuccess);
+		map.put("msg",msg);
+		map.putAll(customMap);
+		return toJson(map);
+	}
+	
+	/**
 	 * 返回dataTable所需的字符串信息
 	 * @param list
 	 * @return

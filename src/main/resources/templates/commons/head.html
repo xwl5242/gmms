@@ -1,6 +1,6 @@
 <#assign ctx=req.getContextPath()>
 <#assign userTheme=Session.userTheme!> 
-<#assign siteCss=(userTheme??)?string('skins/'+userTheme.themeColor+'.css','css/site.css')>
+<#assign siteCss=((userTheme?has_content)&&((userTheme.themeColor)?has_content))?string('skins/'+userTheme.themeColor+'.css','css/site.css')>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <!-- 移动设备 viewport -->

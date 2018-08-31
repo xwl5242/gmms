@@ -5,7 +5,7 @@ server:
 #数据源配置
 spring:
   datasource:
-    name: vmms
+    name: gmms
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
     #基本配置
@@ -13,6 +13,9 @@ spring:
       url: jdbc:mysql://localhost:3306/vmms?useUnicode=true&characterEncoding=UTF-8
       username: root
       password: root
+#      url: jdbc:mysql://rm-m5eqsxh3u15o2034aco.mysql.rds.aliyuncs.com:3306/business_integration?useUnicode=true&characterEncoding=utf-8
+#      username: shengshang
+#      password: ShengShang888
     #监控统计拦截
       filters: stat
     #配置初始化大小

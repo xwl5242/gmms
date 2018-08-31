@@ -4,7 +4,7 @@
     var $content = $("#admui-pageContent"),
         $nestable = $('[data-plugin="nestable"]'),
         $topMenu = $content.find('.top-menu');
-
+    
     window.Content = App.extend({
         run: function (next) {
             var self = this,
@@ -13,11 +13,12 @@
             self.menuObj = [];
 
             this.menuInit();
-
+            
+            //"全部保存"按钮点击事件
             $content.on('click', '#saveChlidMenu', function () {
                 self.saveData();
             });
-
+            
             $nestable.on('mousedown', function (e) {
                 var $itemCopy = $('.dd-placeholder', $nestable), $target, $item;
 
@@ -125,22 +126,22 @@
                     self.submenuEdit(menuData);
 
                 });
-
-            $content.on('click', '.top-menu > div[data-children]', function () { // 顶部菜单
-                var $that = $(this),
-                    updateMsg = function () {
-                        $that.siblings('div[data-children]').removeClass('active');
-                        $that.addClass('active');
-
-                        self.submenuRender($that.data('children'));
-                    };
+            
+            //顶部菜单点击事件
+            $content.on('click', '.top-menu > div[data-children]', function () { 
+                var $that = $(this),//具体顶部菜单
+                //顶部菜单内容修改
+                updateMsg = function () {
+                    $that.siblings('div[data-children]').removeClass('active');
+                    $that.addClass('active');
+                    self.submenuRender($that.data('children'));
+                };
 
                 if ($('.page-aside-switch').is(':visible')) {
                     self.pageAside();
                 }
 
                 if (!$that.hasClass('active')) {
-
                     if (self.subType) {
                         alertify.theme('bootstrap').okBtn('保存').cancelBtn('不保存')
                             .confirm('您还未对修改过的信息进行保存，请先进行保存！', function () {
@@ -159,11 +160,13 @@
                 }
             });
 
+            
             $content.on('click', '.nav-submenu', function () { // 小屏幕下顶部菜单展示
                 $(".page-aside").removeClass('open');
             });
 
-            $content.on('click', '[data-tag="list-editable"], #addMenuToggle', function (e) { //添加|编辑顶部菜单
+            //添加|编辑顶部菜单
+            $content.on('click', '[data-tag="list-editable"], #addMenuToggle', function (e) {
                 var $item = $(this),
                     data = self.menuData($item.parents("div[data-children]"));
 
@@ -176,11 +179,10 @@
                 }
 
                 var html = template('selectOption', data);
-
                 $('#addMenu').find('.modal-content').html(html);
 
                 self.getAuth(data.id, 'add');
-
+                
                 $('.icp-dd').iconpicker($.po('iconpickerWb')).on('iconpickerSelected', function (e) {
                     $(this).prev('span').children('i[data-icon]').data('icon', e.iconpickerValue).attr('data-icon', e.iconpickerValue);
                 });
@@ -188,10 +190,12 @@
                 $('#addMenu').modal('show');
 
                 self.editMenuValid(data.id);
+                
                 e.stopPropagation();
             });
 
-            $content.on('click', '[data-tag="list-delete"]', function (e) { // 删除顶部菜单
+            //删除顶部菜单
+            $content.on('click', '[data-tag="list-delete"]', function (e) { 
                 var $item = $(this).parents('div[data-children]'), str,
                     ID = $item.data('id'),
                     callback = function () {
@@ -217,7 +221,7 @@
                 alertify.theme('bootstrap')
                     .confirm("您确定要删除该菜单吗？", function () {
                         $.ajax({
-                            url: location.host+$.ctx + '/menu/delete?menuId=' + ID,
+                            url: $.ctx + 'right/delete/' + ID,
                             type: 'POST',
                             dataType: 'JSON',
                             success: function (data) {
@@ -289,7 +293,6 @@
                         $item.data('type', 'update').attr('data-type', 'update');
                     }
                 }
-
                 $(this).val(thisVal);
             });
 
@@ -520,8 +523,8 @@
             }
 
             $.ajax({
-                url: $.ctx + '/menu/roles',
-                data: {menuId: ID},
+                url: $.ctx + 'right/roles',
+                data: {rightId: ID},
                 dataType: 'JSON',
                 success: function (data) {
                     var html = '', selected,
@@ -547,8 +550,9 @@
                         toastr.error("出错了，请重试！");
                     }
                 },
-                error: function () {
+                error: function (data) {
                     toastr.error('服务器异常，请稍后再试！');
+                    window.location.reload();
                 }
             });
         },
@@ -660,7 +664,7 @@
 
             $('.menu-info').html(html);
 
-//            this.getAuth(menuData.id);
+            this.getAuth(menuData.id);
 
             $('.icp-dd1').iconpicker($.po('iconpicker', {title: '请选择菜单图标'}))
                 .on('iconpickerSelected', function (e) {
@@ -754,6 +758,8 @@
                         auth = validator.getFieldElements('menu_limit').val(),
                         menuData = {
                             id: ID,
+                            pid: '0',
+                            url: '#',
                             text: validator.getFieldElements('menu_name').val(),
                             icon: $(e.target).find("i[data-icon]").data("icon")
                         };
@@ -770,7 +776,7 @@
                     }
 
                     $.ajax({
-                        url: $.ctx + '/menu/save',
+                        url: $.ctx + 'right/save',
                         type: 'POST',
                         data: {menu: JSON.stringify(menuData)},
                         dataType: 'JSON',

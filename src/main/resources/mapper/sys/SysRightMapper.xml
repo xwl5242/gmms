@@ -10,7 +10,7 @@
     <result column="IS_LEAF" property="isLeaf" jdbcType="VARCHAR" />
     <result column="ICON" property="icon" jdbcType="VARCHAR" />
     <result column="IS_DEL" property="isDel" jdbcType="VARCHAR" />
-    <result column="SEQ" property="seq" jdbcType="VARCHAR" />
+    <result column="SEQ" property="seq" jdbcType="INTEGER" />
     <result column="CREATOR" property="creator" jdbcType="VARCHAR" />
     <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
     <result column="UPDATOR" property="updator" jdbcType="VARCHAR" />
@@ -40,9 +40,18 @@
   </select>
   
   <!-- 查询所有权限信息 -->
-  <select id="selectList" resultMap="BaseResultMap">
+  <select id="findList" resultMap="BaseResultMap" parameterType="com.zhx.gmms.modules.sys.right.bean.SysRight">
   	select <include refid="Base_Column_List" />
     from sys_right order by SEQ
+  </select>
+  
+  <!-- 查询权限角色 -->
+  <select id="selectRightRoles" parameterType="java.lang.String" resultType="java.util.Map">
+  	select role_id roleId from sys_role_right where right_id = #{rightId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectMaxSeq" parameterType="java.lang.String" resultType="int">
+  	select max(seq) from sys_right where pid=#{pid}
   </select>
   
   <!-- 主键删除 -->
@@ -50,6 +59,15 @@
     delete from sys_right
     where ID = #{id,jdbcType=VARCHAR}
   </delete>
+  
+  <!-- insertRightRoles批量新增权限角色 -->
+  <insert id="insertRightRoles" parameterType="java.util.List">
+      insert into sys_role_right(id,role_id,right_id) values
+      <foreach collection="list" item="item" index="index"
+          separator=",">
+          (#{item.id},#{item.roleId},#{item.rightId})
+      </foreach>
+  </insert>
   
   <!-- 新增 -->
   <insert id="insert" parameterType="com.zhx.gmms.modules.sys.right.bean.SysRight" >
@@ -121,7 +139,7 @@
         #{isDel,jdbcType=VARCHAR},
       </if>
       <if test="seq != null" >
-        #{seq,jdbcType=VARCHAR},
+        #{seq,jdbcType=INTEGER},
       </if>
       <if test="creator != null" >
         #{creator,jdbcType=VARCHAR},
@@ -164,7 +182,7 @@
         IS_DEL = #{isDel,jdbcType=VARCHAR},
       </if>
       <if test="seq != null" >
-        SEQ = #{seq,jdbcType=VARCHAR},
+        SEQ = #{seq,jdbcType=INTEGER},
       </if>
       <if test="creator != null" >
         CREATOR = #{creator,jdbcType=VARCHAR},

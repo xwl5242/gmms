@@ -28,6 +28,15 @@ public class SysUserController extends BaseController {
 	private SysUserService sysUserService;
 	
 	/**
+	 * 初始化名额
+	 * @param meetingId
+	 */
+//	@RequestMapping("/init/quota")
+//	public void importRR() throws Exception{
+//		sysUserService.initQuota();
+//	}
+	
+	/**
 	 * 主键获取用户信息
 	 * @param id 主键
 	 * @return

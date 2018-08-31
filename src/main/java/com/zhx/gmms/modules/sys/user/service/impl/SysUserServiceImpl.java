@@ -100,5 +100,28 @@ public class SysUserServiceImpl implements SysUserService {
 		}
 		return ret>=1?sysTheme:null;
 	}
+
+//	@Override
+//	public void initQuota() {
+//		try {
+//			List<Map<String,Object>> lm = new ArrayList<Map<String,Object>>();
+//			File file = new File("f:\\2.xlsx");
+//			FileInputStream fin = new FileInputStream(file);
+//			List<List<Object>> list = CommonExcelImport.getBankListByExcel(fin,file.getName());
+//			for(List<Object> li:list){
+//				String id = li.get(0).toString();//会员身份证
+//				int q = Integer.valueOf(li.get(1)+"");
+//				id = id.replaceAll(" ","");
+//				Map<String,Object> m = new HashMap<String, Object>();
+//				m.put("id", "'"+id+"'");
+//				m.put("q", q);
+//				lm.add(m);
+//			}
+//			int r = sysUserDao.updateUserQuota(lm);
+//			System.out.println("excel总条数："+list.size()+"；更新成功总条数："+r);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 }
