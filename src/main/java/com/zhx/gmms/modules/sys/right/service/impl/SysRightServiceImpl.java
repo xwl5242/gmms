@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -94,7 +95,7 @@ public class SysRightServiceImpl implements SysRightService {
 	public int removeRight(String id) {
 		int i = 0;
 		//递归拿到该菜单的子菜单，子子菜单，子子子菜单...
-		List<String> rightIds = rec(id);
+		List<String> rightIds = recRights(id);
 		rightIds.add(id);
 		//删除本菜单以及子菜单的所有  菜单和权限关系
 		i+=rightDao.delete(rightIds);
@@ -102,27 +103,12 @@ public class SysRightServiceImpl implements SysRightService {
 		return i;
 	}
 	
-	private List<String> rec(String pid){
-		List<String> rightIds = new ArrayList<String>();
-		//所有子菜单
-		List<SysRight> rlist = findListByPid(pid);//所有子菜单
-		if(null!=rlist&&rlist.size()>0){
-			for(SysRight r:rlist){
-				rightIds.add(r.getId());
-				rightIds.addAll(rec(r.getId()));
-			}
-		}
-		return rightIds;
-	}
-
 	/**
 	 * 保存权限，前端页面新建菜单的形式。以MenuData的类型
 	 */
 	@Transactional(readOnly=false)
-	public int saveRightByMenuData(MenuData md) {
+	public int saveTopRightByMenuData(MenuData md) {
 		int result = 0;
-		//生成uuid，为新增做准备
-		String rightId = UUIDGenerator.getUUID();
 		//配置权限信息
 		SysRight right = new SysRight();
 		right.setRightName(md.getText());
@@ -130,16 +116,16 @@ public class SysRightServiceImpl implements SysRightService {
 		right.setPid(md.getPid());
 		right.setRightUrl(md.getUrl());
 		right.setIcon(md.getIcon());
-		int maxSeq = rightDao.selectMaxSeq(right.getPid());
 		if("add".equals(md.getType())){
 			//新增
+			int maxSeq = rightDao.selectMaxSeq(right.getPid());//查询当前权限节点下子节点的最大排序数值
+			String rightId = StringUtils.isBlank(md.getId())?UUIDGenerator.getUUID():md.getId();//生成uuid，为新增做准备
 			right.setId(rightId);
 			right.setSeq(maxSeq+5);
 			result += rightDao.insert(right);
 		}else{
 			//修改
 			right.setId(md.getId());
-			right.setSeq(maxSeq);
 			result += rightDao.update(right);
 		}
 		//查询权限和角色关系
@@ -153,15 +139,82 @@ public class SysRightServiceImpl implements SysRightService {
 				m.put("roleId", auth.getId());
 				list.add(m);
 			}
+			if("update".equals(md.getType())){
+				//如果是修改，权限角色关系可能也被修改，先删除之前的
+				List<String> rightIds = new ArrayList<String>();
+				rightIds.add(right.getId());
+				rightDao.deleteRightRole(rightIds);
+			}
+			result += rightDao.insertRightRoles(list);
 		}
-		if(!"add".equals(md.getType())){
-			//如果是修改，权限角色关系可能也被修改，先删除之前的
-			List<String> rightIds = new ArrayList<String>();
-			rightIds.add(right.getId());
-			rightDao.deleteRightRole(rightIds);
-		}
-		result += rightDao.insertRightRoles(list);
 		return result;
 	}
 
+	/**
+	 * 保存子权限，前端页面新建菜单的形式。以MenuData的类型
+	 */
+	@Override
+	public int saveSubRightByMenuData(MenuData md) {
+		int r = 0;
+		List<MenuData> mds = recMenuData(md);
+		if(null!=mds&&mds.size()>0){
+			for(MenuData m:mds){
+				r += saveTopRightByMenuData(m);
+			}
+		}
+		return r;
+	}
+
+	/**
+	 * 递归查询某一权限的所有子权限id
+	 * @param pid
+	 * @return
+	 */
+	private List<String> recRights(String pid){
+		List<String> rightIds = new ArrayList<String>();
+		//所有子菜单
+		List<SysRight> rlist = findListByPid(pid);//所有子菜单
+		if(null!=rlist&&rlist.size()>0){
+			for(SysRight r:rlist){
+				rightIds.add(r.getId());
+				rightIds.addAll(recRights(r.getId()));
+			}
+		}
+		return rightIds;
+	}
+	
+	/**
+	 * 递归遍历MenuData找到其中需要新增或者更新的数据
+	 * @param md
+	 * @return
+	 */
+	private List<MenuData> recMenuData(MenuData md){
+		List<MenuData> mds = new ArrayList<MenuData>();
+		if(null!=md.getChildren()&&md.getChildren().size()>0){
+			for(MenuData m : md.getChildren()){
+				if(StringUtils.isNotBlank(m.getType())){
+					mds.add(m);
+				}
+				mds.addAll(recMenuData(m));
+			}
+		}
+		return mds;
+	}
+
+	/**
+	 * 更新顶部菜单顺序
+	 */
+	@Override
+	public int updateTopOrder(List<Map> list) throws Exception{
+		int r = 0;
+		for(Map tm:list){
+			String rightId = tm.get("id").toString();
+			int seq = Integer.valueOf(tm.get("orderNo").toString())-1;
+			SysRight right = new SysRight();
+			right.setId(rightId);
+			right.setSeq(seq*5);
+			r+=rightDao.update(right);
+		}
+		return r;
+	}
 }

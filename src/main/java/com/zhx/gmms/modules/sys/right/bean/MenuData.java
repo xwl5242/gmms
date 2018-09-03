@@ -15,6 +15,7 @@ public class MenuData {
 	private String icon;
 	private String type;
 	private List<Auth> auth;
+	private List<MenuData> children;
 	public String getId() {
 		return id;
 	}
@@ -57,11 +58,17 @@ public class MenuData {
 	public void setAuth(List<Auth> auth) {
 		this.auth = auth;
 	}
+	public List<MenuData> getChildren() {
+		return children;
+	}
+	public void setChildren(List<MenuData> children) {
+		this.children = children;
+	}
 	@Override
 	public String toString() {
 		return "MenuData [id=" + id + ", pid=" + pid + ", url=" + url
 				+ ", text=" + text + ", icon=" + icon + ", type=" + type
-				+ ", auth=" + auth + "]";
+				+ ", auth=" + auth + ", children=" + children + "]";
 	}
 	public static class Auth{
 		private String id;

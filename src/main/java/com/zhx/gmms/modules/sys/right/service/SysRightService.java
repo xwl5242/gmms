@@ -43,10 +43,24 @@ public interface SysRightService {
 	int removeRight(String id);
 
 	/**
-	 * 保存权限，前端页面新建菜单的形式。以MenuData的类型
+	 * 保存顶部权限，前端页面新建菜单的形式。以MenuData的类型
 	 * @param md
 	 * @return
 	 */
-	int saveRightByMenuData(MenuData md);
+	int saveTopRightByMenuData(MenuData md);
+
+	/**
+	 * 保存子权限，前端页面新建菜单的形式。以MenuData的类型
+	 * @param md
+	 * @return
+	 */
+	int saveSubRightByMenuData(MenuData md);
+
+	/**
+	 * 更新顶部菜单顺序
+	 * @param list
+	 * @return
+	 */
+	int updateTopOrder(List<Map> list) throws Exception;
 
 }

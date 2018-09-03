@@ -394,7 +394,8 @@
 
                 $liActive = $('[data-plugin="nestable"] .active').parent('li');
                 dataRrank = $liActive.data("rank");
-                flag = self.insertChildMenu($item, $liActive, dataRrank, newMenu);
+                var uuidStr = self.guid();
+                flag = self.insertChildMenu($item, $liActive, dataRrank, newMenu,uuidStr);
 
                 if (typeof flag === 'undefined') {
                     menuData = self.menuData($nestable.find('.active').parent('li'));
@@ -421,7 +422,7 @@
             });
 
             $.ajax({
-                url: $.ctx + '/menu/updateTopOrder',
+                url: $.ctx + 'right/updateTopOrder',
                 type: 'POST',
                 data: {topMenus: JSON.stringify(order)},
                 dataType: 'JSON',
@@ -443,7 +444,7 @@
             this.menuObj.children = $nestable.nestable('serialize');
 
             $.ajax({
-                url: $.ctx + '/menu/save',
+                url: $.ctx + 'right/saveSubRight',
                 type: 'POST',
                 data: {menu: JSON.stringify(this.menuObj)},
                 dataType: 'JSON',
@@ -473,7 +474,8 @@
                 url: doc.data('url'),
                 text: doc.data('text'),
                 icon: doc.data('icon'),
-                layer: doc.data('layer')
+                layer: doc.data('layer'),
+                pid: doc.data('pid')
             };
         },
 
@@ -673,20 +675,24 @@
                 });
 
         },
-
-        insertChildMenu: function ($item, $liActive, dataRrank, newMenu) {
+        guid:function() {
+        	  function S4() {
+        	    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+        	  }
+        	  return (S4()+S4()+S4()+S4()+S4()+S4()+S4()+S4());
+        },
+        insertChildMenu: function ($item, $liActive, dataRrank, newMenu,uuidStr) {
             var callback = function (icon) {
                 var html;
-
                 if (icon) {
-                    html = '<li class="dd-item dd-item-alt" data-id="" data-auth="" data-rank="'
+                    html = '<li class="dd-item dd-item-alt" data-pid="'+dataPid+'" data-id="'+uuidStr+'" data-auth="" data-rank="'
                         + dataRrank + '" new-build="' + newMenu + '" data-text="自定义菜单" data-url="'
                         + '#" data-icon="fa-bars" data-type="add"><div class="dd-handle"></div>' +
                         '<div class="dd-content active"><span class="menu-name"><i class="menu-icon' +
                         ' fa-bars"></i> 自定义菜单</span><span class="pull-right fa-angle-right">' +
                         '</span></div></li>';
                 } else {
-                    html = '<li class="dd-item dd-item-alt" data-id="" data-auth="" data-rank="' + dataRrank +
+                    html = '<li class="dd-item dd-item-alt" data-pid="'+dataPid+'" data-id="'+uuidStr+'" data-auth="" data-rank="' + dataRrank +
                         '" new-build="' + newMenu + '" data-text="自定义菜单" data-url="#" data-icon="" data-type="add">' +
                         '<div class="dd-handle"></div><div class="dd-content active"><span class="menu-name">自定义菜单' +
                         '</span><span class="pull-right fa-angle-right"></span></div></li>';
@@ -694,9 +700,10 @@
 
                 return html;
             };
-
+            var dataPid;
             if ($item.hasClass("after")) {
-                if (dataRrank === 3) {
+            	dataPid = $liActive.data("pid");
+                if (dataRrank === 2) {
                     $liActive.after(callback('icon'));
                 } else {
                     $liActive.after(callback());
@@ -704,6 +711,7 @@
             }
 
             if ($item.hasClass("append")) {
+            	dataPid = $liActive.data("id");
                 if (dataRrank >= 5) {
                     toastr.warning("已经是最后一级菜单，不能再为其添加子菜单了！");
                     newMenu--;
@@ -718,7 +726,7 @@
                 dataRrank = Number(dataRrank) + 1;
 
 
-                if (dataRrank === 3) {
+                if (dataRrank === 2) {
                     $liActive.children("ol").append(callback('icon'));
                 } else {
                     $liActive.children("ol").append(callback());
@@ -777,7 +785,7 @@
                     }
 
                     $.ajax({
-                        url: $.ctx + 'right/save',
+                        url: $.ctx + 'right/saveTopRight',
                         type: 'POST',
                         data: {menu: JSON.stringify(menuData)},
                         dataType: 'JSON',

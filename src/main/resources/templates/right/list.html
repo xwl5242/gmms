@@ -26,9 +26,9 @@
 						{{each navMenu}} 
 							{{if $value.pid=='0'}}
 								{{if $value.seq == '0'}}
-                                	<div class="list-group-item active" data-id="{{$value.id}}" data-text="{{$value.rightName?$value.rightName:$value.text}}" data-layer="{{$value.seq}}" data-icon="{{$value.icon}}" data-auth="" data-children="{{$value.childNode?$value.childNode:$value.children | json_str}}">
+                                	<div class="list-group-item active" data-pid="{{$value.pid}}" data-id="{{$value.id}}" data-text="{{$value.rightName?$value.rightName:$value.text}}" data-layer="{{$value.seq}}" data-icon="{{$value.icon}}" data-auth="" data-children="{{$value.childNode?$value.childNode:$value.children | json_str}}">
                             	{{else}}
-                               		<div class="list-group-item" data-id="{{$value.id}}" data-text="{{$value.rightName?$value.rightName:$value.text}}" data-icon="{{$value.icon}}" data-layer="{{$value.seq}}" data-children="{{$value.childNode?$value.childNode:$value.children | json_str}}">
+                               		<div class="list-group-item" data-pid="{{$value.pid}}" data-id="{{$value.id}}" data-text="{{$value.rightName?$value.rightName:$value.text}}" data-icon="{{$value.icon}}" data-layer="{{$value.seq}}" data-children="{{$value.childNode?$value.childNode:$value.children | json_str}}">
                             	{{/if}}
                                    <div class="list-content">
                                         <i class="icon topmenu-icon {{$value.icon}}"></i>
@@ -71,7 +71,7 @@
                           	<script id="childMenu" type="text/html">
                                         <ol class="dd-list animation-fade">
                                             {{each menu}}
-                                            <li class="dd-item dd-item-alt" data-id="{{$value.id}}" data-rank="2" data-auth="" data-type="" data-text="{{$value.rightName?$value.rightName:$value.text}}" data-url="{{$value.rightUrl?$value.rightUrl:$value.url}}" data-icon="{{$value.icon}}">
+                                            <li class="dd-item dd-item-alt" data-pid="{{$value.pid}}" data-id="{{$value.id}}" data-rank="2" data-auth="" data-type="" data-text="{{$value.rightName?$value.rightName:$value.text}}" data-url="{{$value.rightUrl?$value.rightUrl:$value.url}}" data-icon="{{$value.icon}}">
                                                 <div class="dd-handle"></div>
                                                 {{if $index == 0}}
                                                 <div class="dd-content active">
@@ -84,7 +84,7 @@
                                                     {{if $value.childNode?$value.childNode:$value.children}}
                                                     <ol class="dd-list">
                                                         {{each $value.childNode?$value.childNode:$value.children}}
-                                                        <li class="dd-item dd-item-alt" data-id="{{$value.id}}" data-rank="3" data-auth="" data-type="" data-text="{{$value.rightName?$value.rightName:$value.text}}" data-url="{{$value.rightUrl?$value.rightUrl:$value.url}}" data-icon="{{$value.icon}}">
+                                                        <li class="dd-item dd-item-alt" data-pid="{{$value.pid}}" data-id="{{$value.id}}" data-rank="3" data-auth="" data-type="" data-text="{{$value.rightName?$value.rightName:$value.text}}" data-url="{{$value.rightUrl?$value.rightUrl:$value.url}}" data-icon="{{$value.icon}}">
                                                             <div class="dd-handle"></div>
                                                             <div class="dd-content">
                                                                 <span class="menu-name">{{if $value.icon}}<i class="menu-icon {{$value.icon}}"></i>{{/if}} {{$value.rightName?$value.rightName:$value.text}}</span>
@@ -93,7 +93,7 @@
                                                             {{if $value.childNode?$value.childNode:$value.children}}
                                                             <ol class="dd-list">
                                                                 {{each $value.childNode?$value.childNode:$value.children}}
-                                                                <li class="dd-item dd-item-alt" data-id="{{$value.id}}" data-auth="" data-type="" data-rank="4" data-text="{{$value.rightName?$value.rightName:$value.text}}" data-url="{{$value.rightUrl?$value.rightUrl:$value.url}}" data-icon="{{$value.icon}}">
+                                                                <li class="dd-item dd-item-alt" data-pid="{{$value.pid}}" data-id="{{$value.id}}" data-auth="" data-type="" data-rank="4" data-text="{{$value.rightName?$value.rightName:$value.text}}" data-url="{{$value.rightUrl?$value.rightUrl:$value.url}}" data-icon="{{$value.icon}}">
                                                                     <div class="dd-handle"></div>
                                                                     <div class="dd-content">
                                                                         <span class="menu-name">{{if $value.icon}}<i class="menu-icon {{$value.icon}}"></i>{{/if}} {{$value.rightName?$value.rightName:$value.text}}</span>
@@ -102,7 +102,7 @@
                                                                     {{if $value.childNode?$value.childNode:$value.children}}
                                                                     <ol class="dd-list">
                                                                         {{each $value.childNode?$value.childNode:$value.children}}
-                                                                        <li class="dd-item dd-item-alt" data-id="{{$value.id}}" data-rank="5" data-text="{{$value.rightName?$value.rightName:$value.text}}" data-auth="" data-type="" data-url="{{$value.rightUrl?$value.rightUrl:$value.url}}" data-icon="{{$value.icon}}">
+                                                                        <li class="dd-item dd-item-alt" data-pid="{{$value.pid}}" data-id="{{$value.id}}" data-rank="5" data-text="{{$value.rightName?$value.rightName:$value.text}}" data-auth="" data-type="" data-url="{{$value.rightUrl?$value.rightUrl:$value.url}}" data-icon="{{$value.icon}}">
                                                                             <div class="dd-handle"></div>
                                                                             <div class="dd-content">
                                                                                 <span class="menu-name">{{if $value.icon}}<i class="menu-icon {{$value.icon}}"></i>{{/if}} {{$value.rightName?$value.rightName:$value.text}}</span>

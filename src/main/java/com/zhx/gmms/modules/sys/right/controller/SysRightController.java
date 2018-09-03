@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.zhx.gmms.frame.BaseController;
 import com.zhx.gmms.frame.Const;
 import com.zhx.gmms.modules.sys.right.RightUtils;
@@ -24,6 +25,7 @@ import com.zhx.gmms.modules.sys.right.service.SysRightService;
 
 @Controller
 @RequestMapping("/right")
+@SuppressWarnings("unchecked")
 public class SysRightController extends BaseController {
 	
 	private Logger logger = LoggerFactory.getLogger(SysRightController.class);
@@ -56,18 +58,46 @@ public class SysRightController extends BaseController {
 	}
 	
 	/**
-	 * 保存权限，前端页面新建菜单的形式。以MenuData的类型
+	 * 保存顶部权限，前端页面新建菜单的形式。以MenuData的类型
 	 * @param menu
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping("/save")
+	@PostMapping("/saveTopRight")
 	@ResponseBody
-	public String saveRight(String menu) throws Exception{
+	public String saveTopRight(String menu) throws Exception{
 		MenuData md = objectMapper.readValue(menu, MenuData.class);
 		//保存权限，前端页面新建菜单的形式。以MenuData的类型
-		int r = rightService.saveRightByMenuData(md);
+		int r = rightService.saveTopRightByMenuData(md);
 		return toJson(r==md.getAuth().size()+1);
+	}
+	
+	/**
+	 * 保存子菜单
+	 * @param menu
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/saveSubRight")
+	@ResponseBody
+	public String saveSubRight(String menu) throws Exception{
+		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);//忽略javabean对象中不存在的字段
+		objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);//允许空的字符串转为null
+		MenuData md = objectMapper.readValue(menu, MenuData.class);
+		int r = rightService.saveSubRightByMenuData(md);
+		return toJson(r>=1);
+	}
+	
+	/**
+	 * 更新顶部菜单顺序
+	 * @return
+	 */
+	@PostMapping("/updateTopOrder")
+	@ResponseBody
+	public String updateTopOrder(String topMenus) throws Exception{
+		List<Map> list = objectMapper.readValue(topMenus, List.class);
+		int r = rightService.updateTopOrder(list);
+		return toJson(r==list.size());
 	}
 	
 	/**

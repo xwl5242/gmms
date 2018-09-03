@@ -1,6 +1,6 @@
 <#assign ctx=req.getContextPath()>
-<#assign level=(level!0)+1>
 <#list treeList as right>
+<#assign level=(level!0)+1>
 	<#assign isUrl=(right.rightUrl=='#')?string('false','true')>
 	<#assign hrefUrl=(right.rightUrl=='#')?string('javascript:;',req.getContextPath()+'/'+right.rightUrl)>
 	<li class="site-menu-item ${(right.childNode?size gt 0)?string('has-sub','')} ">
@@ -17,8 +17,8 @@
 			<ul class="site-menu-sub">
 				<#assign treeList=right.childNode>
 				<#include "menu_r.html">
-				<#assign level=(level!0)-1>
 			</ul>
 		</#if>
 	</li>
+	<#assign level=(level!0)-1>
 </#list>
