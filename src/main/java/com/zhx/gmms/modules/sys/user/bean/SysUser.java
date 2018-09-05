@@ -113,7 +113,7 @@ public class SysUser extends BaseEntity {
 				+ nickName + ", type=" + type + ", phone=" + phone + ", mail="
 				+ mail + ", sex=" + sex + ", age=" + age + ", useStatus="
 				+ useStatus + ", lastLoginTime=" + lastLoginTime
-				+ ", loginTotal=" + loginTotal + ", themeId=" + themeId + "]";
+				+ ", loginTotal=" + loginTotal + ", themeId=" + themeId+ "]";
 	}
 	
 }

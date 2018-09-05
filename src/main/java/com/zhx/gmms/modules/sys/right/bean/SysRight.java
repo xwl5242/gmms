@@ -15,6 +15,9 @@ public class SysRight extends BaseEntity {
 	private String isLeaf;
 	private Integer seq;
 
+	//查询某角色下是否有某权限时使用，用来标记是否选中
+	private String state;
+	
 	private List<SysRight> childNode;
 
 	public SysRight() {
@@ -100,13 +103,22 @@ public class SysRight extends BaseEntity {
 	public void setIcon(String icon) {
 		this.icon = icon;
 	}
+	
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
 
 	@Override
 	public String toString() {
 		return "SysRight [id=" + id + ", pid=" + pid + ", rightName="
 				+ rightName + ", rightUrl=" + rightUrl + ", rightDesc="
 				+ rightDesc + ", icon=" + icon + ", isLeaf=" + isLeaf
-				+ ", seq=" + seq + ", childNode=" + childNode + "]";
+				+ ", seq=" + seq + ", state=" + state + ", childNode="
+				+ childNode + "]";
 	}
-
+	
 }

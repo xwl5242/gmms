@@ -1,6 +1,5 @@
 package com.zhx.gmms.modules.sys.right.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -95,7 +94,7 @@ public class SysRightController extends BaseController {
 	@PostMapping("/updateTopOrder")
 	@ResponseBody
 	public String updateTopOrder(String topMenus) throws Exception{
-		List<Map> list = objectMapper.readValue(topMenus, List.class);
+		List<Map<String,Object>> list = objectMapper.readValue(topMenus, List.class);
 		int r = rightService.updateTopOrder(list);
 		return toJson(r==list.size());
 	}
@@ -122,9 +121,7 @@ public class SysRightController extends BaseController {
 	@ResponseBody
 	public String roles(String rightId){
 		logger.info("获取权限角色，并标出权限所属的角色是哪些...权限id:"+rightId);
-		List<Map<String,Object>> ret = rightService.findRole(rightId);
-		Map<String,Object> result = new HashMap<String, Object>();
-		result.put("auth", ret);
-		return toJson(null!=ret&&ret.size()>0, result);
+		List<Map<String,Object>> list = rightService.findRightRoles(rightId);
+		return toJsonKV(null!=list&&list.size()>0,"auth",list);
 	}
 }

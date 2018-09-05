@@ -1,9 +1,11 @@
 package com.zhx.gmms.modules.sys.user.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,7 +55,9 @@ public class SysUserController extends BaseController {
 	 * @return
 	 */
 	@GetMapping("/list")
-	public String findList(SysUser user){
+	public String findList(SysUser user,Model model){
+		List<SysUser> ulist = sysUserService.findList(null);
+		model.addAttribute("userCount", ulist.size());
 		return "user/list";
 	}
 	
@@ -86,5 +90,56 @@ public class SysUserController extends BaseController {
 			request.getSession().setAttribute(Const.SESSION_THEME_JSON, toJson(stm));
 		}
 		return toJson(stm);
+	}
+	
+	/**
+	 * 获取用户所属角色，并查出所有角色，标注用户所拥有的角色
+	 * @param userId
+	 * @return
+	 */
+	@GetMapping("/role")
+	@ResponseBody
+	public String userRoles(String userId){
+		List<Map<String, Object>> list = sysUserService.findUserRoles(userId);
+		return toJsonKV(null!=list&&list.size()>0,"auth",list);
+	}
+	
+	/**
+	 * 新增或更新用户信息
+	 * @return
+	 */
+	@PostMapping("/save")
+	@ResponseBody
+	public String saveOrUpdateUser(SysUser user,String[] roleIds,String confirm) throws Exception{
+		//密码和确认密码不一致
+		if(!user.getPassword().equals(confirm)){
+			return toJson(false,"用户密码和确认密码不一致！");
+		}
+		Boolean r = sysUserService.saveOrUpdateUser(user,roleIds);
+		return toJsonKV(r,"user",user);
+	}
+	
+	/**
+	 * 删除用户
+	 * @param userId
+	 * @return
+	 */
+	@PostMapping("/remove")
+	@ResponseBody
+	public String removeUser(String userId){
+		int r = sysUserService.removeUser(userId);
+		return toJson(r==1);
+	}
+	
+	/**
+	 * 禁用启用用户
+	 * @param user
+	 * @return
+	 */
+	@PostMapping("/updateUseStatus")
+	@ResponseBody
+	public String updateUseStatus(SysUser user){
+		int r = sysUserService.editUser(user);
+		return toJson(r==1);
 	}
 }

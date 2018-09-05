@@ -54,7 +54,16 @@
   
   <!-- 查询权限角色 -->
   <select id="selectRightRoles" parameterType="java.lang.String" resultType="java.util.Map">
-  	select role_id roleId from sys_role_right where right_id = #{rightId,jdbcType=VARCHAR}
+  	select r.id,r.role_name text
+  	<choose>
+	  	<when test="_parameter!=null and _parameter!=''">
+	  		,group_concat((case rr.right_id when #{rightId} then 'true' else '' end) separator '') permission 
+	  	</when>
+	  	<otherwise>
+	        ,'' permission
+	    </otherwise>
+    </choose>
+  	from sys_role r left join sys_role_right rr on r.id=rr.role_id where r.is_del='0' group by r.id,r.role_name
   </select>
   
   <select id="selectMaxSeq" parameterType="java.lang.String" resultType="int">

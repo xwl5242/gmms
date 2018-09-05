@@ -37,7 +37,7 @@
 		where ID = #{id,jdbcType=VARCHAR}
 	</select>
 
-	<!-- 分页获取 -->
+	<!-- 获取list -->
 	<select id="findList" parameterType="com.zhx.gmms.modules.sys.user.bean.SysUser"
 		resultMap="BaseResultMap">
 		select
@@ -52,7 +52,7 @@
 		<if test="phone !=null and  phone !=''"> and phone = #{phone}</if>
 		<if test="useStatus !=null and  useStatus !=''"> and use_status = #{useStatus}</if>
 		<if test="isDel !=null and  isDel !=''"> and is_del = #{isDel}</if>
-		order by create_time desc limit #{pageNo},#{pageSize}
+		order by create_time desc 
 	</select>
 
 	<!-- 用户登录名称获取 -->
@@ -62,11 +62,48 @@
 		from sys_user where 1=1 and user_code = #{userCode,jdbcType=VARCHAR}
 	</select>
 
+	<!-- 获取用户所属角色，并查出所有角色，标注用户所拥有的角色 -->
+	<select id="findUserRoles" parameterType="java.lang.String" resultType="java.util.Map">
+		select r.id,r.role_name text
+		 <choose>
+            <when test="_parameter!=null and _parameter!=''">
+                ,group_concat((case ur.user_id when #{userId} then 'true' else '' end) separator '') permission 
+            </when>
+            <otherwise>
+                ,'' permission
+            </otherwise>
+        </choose>
+		from sys_role r LEFT JOIN sys_user_role ur on r.id = ur.role_id group by r.id,r.role_name
+	</select>
+
+	<!-- 查询用户角色关联的个数 -->
+	<select id="findUserRoleCount" parameterType="java.lang.String" resultType="int">
+		select count(1) from sys_user_role where user_id=#{id}
+	</select>
+	
 	<!-- 主键删除 -->
-	<delete id="delete" parameterType="java.lang.String">
+	<delete id="delete" parameterType="java.util.List">
 		delete from sys_user
-		where ID = #{id,jdbcType=VARCHAR}
+		where ID in (
+	    <foreach collection="list" item="id" index="index"
+	        separator=",">
+	        #{id}
+	    </foreach>)
 	</delete>
+
+	<!-- 根据用户id删除用户和角色的关联关系 -->
+	<delete id="deleteUserRole" parameterType="java.lang.String">
+		delete from sys_user_role where user_id = #{id}
+	</delete>
+
+	<!-- 新增用户和角色的关联关系 -->
+	<insert id="insertUserRoles" parameterType="java.util.Map">
+		insert into sys_user_role(id,user_id,role_id) values
+      <foreach collection="list" item="item" index="index"
+          separator=",">
+          (REPLACE(UUID(),"-",""),#{userId},#{item})
+      </foreach>
+	</insert>
 
 	<!-- 新增 -->
 	<insert id="insert" parameterType="com.zhx.gmms.modules.sys.user.bean.SysUser">

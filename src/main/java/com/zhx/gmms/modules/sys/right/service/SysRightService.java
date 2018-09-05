@@ -22,18 +22,11 @@ public interface SysRightService {
 	List<SysRight> findList(SysRight sysRight);
 
 	/**
-	 * 获取权限角色
-	 * @param rightId
-	 * @return
-	 */
-	List<Map<String, String>> findRightRoles(String rightId);
-
-	/**
 	 * 获取权限所属角色，并查出所有角色，标注权限所拥有的角色
 	 * @param rightId
 	 * @return
 	 */
-	List<Map<String, Object>> findRole(String rightId);
+	List<Map<String, Object>> findRightRoles(String rightId);
 
 	/**
 	 * 删除权限
@@ -61,6 +54,6 @@ public interface SysRightService {
 	 * @param list
 	 * @return
 	 */
-	int updateTopOrder(List<Map> list) throws Exception;
+	int updateTopOrder(List<Map<String,Object>> list) throws Exception;
 
 }

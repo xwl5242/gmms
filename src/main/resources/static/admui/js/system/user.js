@@ -3,27 +3,31 @@
 
     var $content = $("#admui-pageContent"),
         $userAccont = $("#userAccountInfo");
-
+    
+    //获取列表中按钮的当前行对象
+    function getCurItem(_this){
+    	var $item = $(_this).closest('tr');
+        var $tr = $item.prev();
+        if($item.hasClass('child') && $tr.hasClass('parent')){
+            $item = $tr;
+        }
+        return $item;
+    };
     window.Content = App.extend({
         handleAction: function () {
-            var self = this,
-                actionBtn = $('.site-action').actionBtn().data('actionBtn'),
-                $selectable = $('.dataTable');
+            var self = this,$selectable = $('.dataTable');
 
             $selectable.asSelectable($.po('selectable', $(this).data()));
 
-            $content.on('click', '.site-action-toggle', '.site-action', function (e) { // 新增用户
-                var $selected = $selectable.asSelectable('getSelected'),
-                    $userInfo = $('#userInfoForm');
+            // 新增用户
+            $content.on('click', '.site-action-toggle', '.site-action', function (e) { 
+                var $userInfo = $('#userInfoForm');
                 self.thisRow = null;
-
-                if ($selected.length === 0) {
-                    e.stopPropagation();
-                    self.getAuth();
-
-                    $userInfo.find("input[name='loginName']").removeAttr("readonly").val("");
-                    $userInfo.find("input[name='userId']").val("");
-                }
+                //获取新增页面角色列表
+                self.getAuth();
+                //设置新增用户页面表单的输入框属性和值
+                $userInfo.find("input[name='userCode']").removeAttr("readonly").val("");
+                $userInfo.find("input[name='id']").val("");
             });
 
             $content.on('click', '[data-action="delete"]', '.site-action', function () { // 删除所选用户
@@ -34,7 +38,7 @@
                     .confirm("您确定要删除所选用户吗？", function () {
                         $tr.each(function () {
                             if ($(this).find(':checkbox').is(':checked')) {
-                                userIds.push(self.table.row($(this)).data().userId);
+                                userIds.push(self.table.row($(this)).data().id);
                             }
                         });
 
@@ -68,56 +72,7 @@
             $content.on('hide.bs.modal', '#userInfoForm', function () {
                 var $userAccount = $('#userAccountInfo');
                 $userAccount.formValidation('resetForm', true);
-                $userAccount.find('input[name="state"]').prop('checked', false).val('NORMAL');
-            });
-
-            /* 选中用户 --禁止所选用户 */
-            $content.on('click', '[data-action="move"]', '.site-action', function (e) {
-                var $tr = $('#user_tables').find('tbody > tr'),
-                    userIds = [];
-
-                alertify.theme('bootstrap')
-                    .confirm('你确定要禁用所选用户吗？', function () {
-                        $tr.each(function () {
-                            if ($(this).find(':checkbox').is(':checked')) {
-                                userIds.push(self.table.row($(this)).data().userId);
-                            }
-
-                        });
-                        $.ajax({
-                            url: $.ctx + '/user/forbid',
-                            type: 'POST',
-                            data: {userId: userIds},
-                            traditional: true,
-                            dataType: 'JSON',
-                            success: function (data) {
-                                if (data.success) {
-                                    $tr.each(function () {
-                                        if ($(this).find(':checkbox').is(':checked')) {
-                                            $(this).addClass('disabled');
-                                        }
-                                    });
-                                }
-                                else {
-                                    toastr.error('出错了，请重试！');
-                                }
-                            },
-                            error: function () {
-                                toastr.error('服务器异常，请稍后再试！');
-                            }
-                        });
-                    }, function () {
-                        actionBtn.hide();
-                    });
-                e.stopPropagation();
-            });
-
-            $content.on('asSelectable::change', '.dataTable', function (e, api, checked) {
-                if (checked) {
-                    actionBtn.show();
-                } else {
-                    actionBtn.hide();
-                }
+                $userAccount.find('input[name="useStatus"]').prop('checked', false).val('NORMAL');
             });
 
             $userAccont.find("input:checkbox").change(function () { // 禁止所选用户
@@ -142,7 +97,7 @@
                 alertify.theme('bootstrap')
                     .confirm("您确定要删除该角色吗？", function () {
                         $.ajax({
-                            url: $.ctx + '/role/delete?roleId=' + dataId,
+                            url: $.ctx + 'role/delete?roleId=' + dataId,
                             type: 'POST',
                             dataType: 'JSON',
                             success: function (data) {
@@ -177,8 +132,8 @@
                 dom: '<"row"<"col-xs-6"<"hidden-xs"B>><"col-xs-6"f>><"row"<"col-xs-12"tr>><"row"<"col-sm-5"i><"col-sm-7"p>>',
                 processing: true,
                 autoWidth: false, //禁用自动调整列宽
-                ajax: $.ctx + '/role/user',
-                rowId: 'userId',
+                ajax: $.ctx + 'user/pagelist',
+                rowId: 'id',
                 buttons: {
                     dom: {
                         container: {
@@ -189,22 +144,23 @@
                         }
                     },
                     buttons: [
-                        {
-                            extend: 'copy',
-                            text: '拷贝'
-                        },
+//                        {
+//                            extend: 'copy',
+//                            text: '拷贝'
+//                        },
                         {
                             extend: 'excel',
                             text: '导出 Excel'
-                        },
-                        {
-                            extend: 'csv',
-                            text: '导出 CSV'
-                        },
-                        {
-                            extend: 'print',
-                            text: '打印'
                         }
+//                        ,
+//                        {
+//                            extend: 'csv',
+//                            text: '导出 CSV'
+//                        },
+//                        {
+//                            extend: 'print',
+//                            text: '打印'
+//                        }
                     ]
                 },
                 columns: [
@@ -216,61 +172,108 @@
                             return checkbox;
                         }
                     },
-                    {"data": "loginName"},
+                    {"data": "userCode"},
+                    {"data": "userName"},
                     {"data": "createTime"},
                     {"data": "lastLoginTime"},
-                    {"data": "loginCount"},
-                    {"data": "lastLoginIp"},
+                    {"data": "loginTotal"},
                     {
                         "render": function () {
-                            var edit = '<button type="button" class="btn btn-sm btn-icon btn-pure btn-default"' + ' data-toggle="edit"><i class="icon wb-edit" aria-hidden="true"></i></button>';
+                            var edit = '<button type="button" class="btn btn-sm btn-icon btn-pure btn-default"' + ' data-toggle="edit"><i class="icon wb-edit" aria-hidden="true" title="修改"></i></button>'+
+                            '<button type="button" class="btn btn-sm btn-icon btn-pure btn-default"' + ' data-toggle="disabled"><i class="icon wb-lock" aria-hidden="true" title="禁用"></i></button>'+
+                            '<button type="button" class="btn btn-sm btn-icon btn-pure btn-default"' + ' data-toggle="remove"><i class="icon wb-trash" aria-hidden="true" title="删除"></i></button>';  
                             return edit;
                         }
                     }
                 ],
                 rowCallback: function (row, data) {
-                    if (data.state === "FORBIDDEN") {
+                    if (data.useStatus === "FORBIDDEN") {
                         $(row).addClass('disabled');
                     }
 
-                    if (data.userId === self.currentUser) {
+                    if (data.id == self.currentUser) {
                         $(row).find('input:checkbox').prop('disabled', true);
                     }
                 }
             }));
         },
-
         handleEdit: function () {
             var self = this, timer;
-
-            $content.on('click', '.page-users button[data-toggle=edit]', function () { //编辑该用户
-                var $userInfo = $('#userInfoForm'),$tr,
+            //禁用
+            $content.on('click', '.page-users button[data-toggle=disabled]', function () {
+            	self.$item = getCurItem(this);
+            	self.thisRow = self.table.row(self.$item).data();
+            	alertify.theme('bootstrap')
+	                .confirm('你确定要禁用 '+self.thisRow.userCode+' 用户吗？', function () {
+	                    $.ajax({
+	                        url: $.ctx + 'user/updateUseStatus',
+	                        type: 'POST',
+	                        data: {id: self.thisRow.id,useStatus: 'FORBIDDEN'},
+	                        traditional: true,
+	                        dataType: 'JSON',
+	                        success: function (data) {
+	                            if (data.success) {
+	                            	self.$item.addClass('disabled');
+	                            	toastr.success('禁用成功！');
+	                            } else {
+	                                toastr.error('出错了，请重试！');
+	                            }
+	                        },
+	                        error: function () {
+	                            toastr.error('服务器异常，请稍后再试！');
+	                        }
+	                    });
+	                });
+            });
+            //删除
+            $content.on('click', '.page-users button[data-toggle=remove]', function () {
+            	self.$item = getCurItem(this);
+            	self.thisRow = self.table.row(self.$item).data();
+            	alertify.theme('bootstrap')
+                .confirm("您确定要删除 "+self.thisRow.userCode+" 用户吗？", function () {
+                    $.ajax({
+                        url: $.ctx + 'user/remove',
+                        type: 'POST',
+                        data: {userId: self.thisRow.id},
+                        traditional: true,
+                        dataType: 'JSON',
+                        success: function (data) {
+                            if (data.success) {
+                                self.table.row(self.$item).remove().draw(false);
+                                toastr.success('删除成功！');
+                            } else {
+                                toastr.error('出错了，请重试！');
+                            }
+                        },
+                        error: function () {
+                            toastr.error('服务器异常，请稍后再试！');
+                        }
+                    });
+                });
+            });
+            //编辑该用户
+            $content.on('click', '.page-users button[data-toggle=edit]', function () { 
+                var $userInfo = $('#userInfoForm'),
                     $checkbox = $userAccont.find('input:checkbox');
-
-                self.$item = $(this).closest('tr');
-                $tr = self.$item.prev();
-
-                if(self.$item.hasClass('child') && $tr.hasClass('parent')){
-                    self.$item = $tr;
-                }
-
+                //获取列表当前项和当前行信息
+                self.$item = getCurItem(this);
                 self.thisRow = self.table.row(self.$item).data();
-
+                
                 $('#userAccountInfo')
                     .formValidation('enableFieldValidators', 'password', false, 'notEmpty')
                     .formValidation('enableFieldValidators', 'confirm', false, 'notEmpty');
 
-                $userInfo.find("input[name='loginName']").attr("readonly", "").val(self.thisRow.loginName);
-                $userInfo.find("input[name='userId']").val(self.thisRow.userId);
+                $userInfo.find("input[name='userCode']").attr("readonly", "").val(self.thisRow.userCode);
+                $userInfo.find("input[name='id']").val(self.thisRow.id);
 
-                if (self.thisRow.userId === self.currentUser) {
+                if (self.thisRow.id === self.currentUser) {
                     $checkbox.prop('disabled', true);
                 } else {
                     if ($checkbox.prop('disabled')) {
                         $checkbox.prop('disabled', false);
                     }
 
-                    if (self.thisRow.state === 'FORBIDDEN') {
+                    if (self.thisRow.useStatus === 'FORBIDDEN') {
                         $checkbox.prop("checked", true).val('FORBIDDEN');
                     }
                 }
@@ -298,11 +301,14 @@
                     "plugins": ["checkbox", "search"],
                     "core": {
                         'data': {
-                            "url": $.ctx + '/role/menus?roleId=' + (ID === undefined ? -1 : ID),
+                            "url": $.ctx + 'role/rights?roleId=' + (ID === undefined ? '' : ID),
                             "dataType": "JSON"
                         }
                     }
                 });
+                //设置overflow属性，如果权限树很长，页面自动添加滚动条
+                $('.slimScrollDiv').css('overflow','auto');
+                $('[data-plugin="slimScroll"]').css('overflow','auto');
                 e.stopPropagation();
 
             });
@@ -374,10 +380,10 @@
 
         getAuth: function () {
             var html, self = this,
-                ID = self.thisRow === null ? -1 : self.thisRow.userId;
+                ID = self.thisRow === null ? '' : self.thisRow.id;
 
             $.ajax({
-                url: $.ctx + '/user/role?userId=' + ID,
+                url: $.ctx + 'user/role?userId=' + ID,
                 dataType: 'JSON',
                 success: function (data) {
                     if (data.success) {
@@ -404,7 +410,7 @@
         currentRole: function ($item) {
             var $parents = $('.page-aside-inner'),
                 ID = $item.attr('data-id'),
-                url = $.ctx + (ID === undefined ? '/role/user' : '/role/user?roleId=' + ID);
+                url = $.ctx + (ID === undefined ? 'role/user' : 'role/user?roleId=' + ID);
 
             if (!$item.is('.active')) {
                 $parents.find('.list-group-item').removeClass('active');
@@ -414,13 +420,13 @@
         },
 
         roleInfoCallback: function (validator, data) {
-            var storeData = {
-                role: {}
-            }, html;
-            storeData.role.name = validator.getFieldElements('roleName').val();
+            var r={},role={},roles=[], html;
+            role.role_name = validator.getFieldElements('roleName').val();
             if (data.id) {
-                storeData.role.id = data.id;
-                html = template('roleTpl', storeData);
+                role.id = data.id;
+                roles[0] = role;
+                r.role=roles;
+                html = template('roleTpl', r);
             }
 
             $('#roleForm').one('hidden.bs.modal', function () {
@@ -428,17 +434,34 @@
                 if (data.id) {
                     $roleContent.append(html);
                 } else {
-                    $roleContent.children('div.active').find('span.list-text').text(storeData.role.name);
+                    $roleContent.children('div.active').find('span.list-text').text(role.role_name);
                 }
             }).modal('hide');
         },
-
+        initRoleList: function(){
+        	//初始化roleList，查询角色信息，包括每个角色关联有多少个用户的信息
+        	$.ajax({
+                url: $.ctx + 'role/usercounts',
+                dataType: 'JSON',
+                success: function (data) {
+                	var $roles = $(".role-contents"),r = {}, html;
+                	r.role = data;
+                	html = template('roleTpl', r);
+                	$roles.append(html);
+                },
+                error: function () {
+                    toastr.error('服务器异常，请稍后再试！');
+                }
+            });
+        	
+        },
         run: function (next) {
             var self = this;
 
             this.currentUser = $('#admui-signOut').data('user');
             this.allUsers = $("[data-allUsers]").attr("data-allUsers");
 
+            this.initRoleList();
             this.handleTable();
             this.handleAction();
             this.handleListItem();
@@ -493,7 +516,7 @@
                     var $item = $(this),
                         validator = $(e.target).data('formValidation'),
                         callback = function () {
-                            var state = validator.getFieldElements('state').val();
+                            var state = validator.getFieldElements('useStatus').val();
                             self.table.row(self.$item).data().state = state;
 
                             if (state === "NORMAL") {
@@ -508,7 +531,7 @@
                         };
 
                     $.ajax({
-                        url: $.ctx + '/user/save',
+                        url: $.ctx + 'user/save',
                         type: 'POST',
                         data: $item.serialize(),
                         dataType: 'JSON',
@@ -548,7 +571,7 @@
                     var validator = $(e.target).data('formValidation');
 
                     $.ajax({
-                        url: $.ctx + '/role/save',
+                        url: $.ctx + 'role/save',
                         type: 'POST',
                         data: $("#roleInfo").serialize(),
                         dataType: 'JSON',

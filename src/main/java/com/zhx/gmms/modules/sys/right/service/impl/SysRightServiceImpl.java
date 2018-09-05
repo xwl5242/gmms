@@ -15,7 +15,6 @@ import com.zhx.gmms.modules.sys.right.bean.MenuData;
 import com.zhx.gmms.modules.sys.right.bean.SysRight;
 import com.zhx.gmms.modules.sys.right.dao.SysRightDao;
 import com.zhx.gmms.modules.sys.right.service.SysRightService;
-import com.zhx.gmms.modules.sys.role.bean.SysRole;
 import com.zhx.gmms.modules.sys.role.service.SysRoleService;
 import com.zhx.gmms.utils.UUIDGenerator;
 
@@ -55,37 +54,11 @@ public class SysRightServiceImpl implements SysRightService {
 	}
 	
 	/**
-	 * 获取权限角色
-	 */
-	@Transactional(readOnly=true)
-	public List<Map<String, String>> findRightRoles(String rightId) {
-		return rightDao.selectRightRoles(rightId);
-	}
-
-	/**
 	 * 获取权限所属角色，并查出所有角色，标注权限所拥有的角色
 	 */
 	@Transactional(readOnly=true)
-	public List<Map<String, Object>> findRole(String rightId) {
-		List<Map<String, Object>> ret = new ArrayList<Map<String,Object>>();
-		//当前权限所属的角色
-		List<Map<String, String>> rrlist = findRightRoles(rightId);
-		//查询所有角色信息
-		List<SysRole> roleList = sysRoleService.findList(new SysRole());
-		if(null!=roleList&&roleList.size()>0){
-			for(SysRole role:roleList){
-				//前端页面所需数据格式
-				Map<String,Object> rrm = new HashMap<String, Object>();
-				rrm.put("id", role.getId());
-				rrm.put("text", role.getRoleName());
-				//用来判断是否含有
-				Map<String,String> rm = new HashMap<String, String>();
-				rm.put("roleId", role.getId());
-				rrm.put("permission", rrlist.contains(rm));
-				ret.add(rrm);
-			}
-		}
-		return ret;
+	public List<Map<String, Object>> findRightRoles(String rightId) {
+		return rightDao.selectRightRoles(rightId);
 	}
 
 	/**
@@ -119,8 +92,7 @@ public class SysRightServiceImpl implements SysRightService {
 		if("add".equals(md.getType())){
 			//新增
 			int maxSeq = rightDao.selectMaxSeq(right.getPid());//查询当前权限节点下子节点的最大排序数值
-			String rightId = StringUtils.isBlank(md.getId())?UUIDGenerator.getUUID():md.getId();//生成uuid，为新增做准备
-			right.setId(rightId);
+			right.setId(UUIDGenerator.getUUID());
 			right.setSeq(maxSeq+5);
 			result += rightDao.insert(right);
 		}else{
@@ -205,9 +177,9 @@ public class SysRightServiceImpl implements SysRightService {
 	 * 更新顶部菜单顺序
 	 */
 	@Override
-	public int updateTopOrder(List<Map> list) throws Exception{
+	public int updateTopOrder(List<Map<String,Object>> list) throws Exception{
 		int r = 0;
-		for(Map tm:list){
+		for(Map<String,Object> tm:list){
 			String rightId = tm.get("id").toString();
 			int seq = Integer.valueOf(tm.get("orderNo").toString())-1;
 			SysRight right = new SysRight();
@@ -217,4 +189,5 @@ public class SysRightServiceImpl implements SysRightService {
 		}
 		return r;
 	}
+
 }

@@ -1,6 +1,7 @@
 package com.zhx.gmms.modules.sys.user.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.zhx.gmms.modules.sys.right.bean.SysRight;
 import com.zhx.gmms.modules.sys.theme.bean.SysTheme;
@@ -30,13 +31,6 @@ public interface SysUserService {
 	SysUser queryByUserCode(String userCode);
 
 	/**
-	 * 更新用户信息
-	 * @param loginUser
-	 * @return
-	 */
-	int editUser(SysUser user);
-
-	/**
 	 * 获取用户的主题信息
 	 * @param themeId
 	 * @return
@@ -56,6 +50,35 @@ public interface SysUserService {
 	 * @return
 	 */
 	SysTheme updateTheme(SysTheme sysTheme,String userId);
+
+	/**
+	 * 获取用户所属角色，并查出所有角色，标注用户所拥有的角色
+	 * @param userId
+	 * @return
+	 */
+	List<Map<String, Object>> findUserRoles(String userId);
+
+	/**
+	 * 新增或更新用户
+	 * @param user
+	 * @param roleId
+	 * @return
+	 */
+	boolean saveOrUpdateUser(SysUser user, String[] roleId) throws Exception;
+
+	/**
+	 * 更新用户信息
+	 * @param editUser
+	 * @return
+	 */
+	int editUser(SysUser editUser);
+
+	/**
+	 * 删除用户
+	 * @param userId
+	 * @return
+	 */
+	int removeUser(String userId);
 
 //	void initQuota();
 

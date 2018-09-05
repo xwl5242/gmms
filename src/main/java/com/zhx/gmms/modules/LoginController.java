@@ -25,6 +25,7 @@ import com.zhx.gmms.frame.captcha.SpecCaptcha;
 import com.zhx.gmms.modules.sys.right.RightUtils;
 import com.zhx.gmms.modules.sys.right.bean.SysRight;
 import com.zhx.gmms.modules.sys.theme.bean.SysTheme;
+import com.zhx.gmms.modules.sys.user.UserUtils;
 import com.zhx.gmms.modules.sys.user.bean.SysUser;
 import com.zhx.gmms.modules.sys.user.service.SysUserService;
 import com.zhx.gmms.utils.DESUtils;
@@ -117,8 +118,9 @@ public class LoginController extends BaseController {
 								session.setAttribute(Const.SESSION_THEME_JSON,objectMapper.writeValueAsString(theme));
 								logger.info("登录用户的主题信息："+theme);
 							}
-//							session.setAttribute(Const.SESSION_RIGHT_CHANGED, false);//用户名称
-//							session.setAttribute(Const.SESSION_RIGHT_CHANGED_MENU, "");//用户名称
+							//userUtils中的map集合存放当前登录用户的信息
+							UserUtils.sessionMap.put(Const.SESSION_USER, loginUser);
+							UserUtils.sessionMap.put(Const.SESSION_USER_ID, loginUser.getId());
 							logger.info("用户登录成功，用户信息："+loginUser);
 							//登录成功跳转到首页
 							return "redirect:/home";

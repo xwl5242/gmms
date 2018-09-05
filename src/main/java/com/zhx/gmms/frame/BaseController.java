@@ -33,18 +33,6 @@ public class BaseController {
 	public ObjectMapper objectMapper = new ObjectMapper();
 	
 	/**
-	 * 获取pagelist信息
-	 * @param list 要处理的list
-	 * @return
-	 */
-//	public <T> PageInfo<T> pageList(List<T> list){
-//		int pageNo = Integer.valueOf(request.getParameter("pageNo"));
-//		int pageSize = Integer.valueOf(request.getParameter("pageSize"));
-//		PageHelper.startPage(pageNo, pageSize);
-//		return new PageInfo<T>(list);
-//	}
-	
-	/**
 	 * 清空session中的所有信息
 	 * @param request
 	 */
@@ -112,6 +100,19 @@ public class BaseController {
 		map.put("msg",msg);
 		map.putAll(customMap);
 		return toJson(map);
+	}
+	
+	/**
+	 * 返回json，可存储自定义的一组k,v集合
+	 * @param isSuccess
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public String toJsonKV(boolean isSuccess,String key,Object value){
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put(key, value);
+		return toJson(isSuccess, map);
 	}
 	
 	/**

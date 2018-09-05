@@ -20,7 +20,7 @@ public interface SysRightDao extends CrudDao<SysRight>{
 	 * @param rightId
 	 * @return
 	 */
-	List<Map<String, String>> selectRightRoles(String rightId);
+	List<Map<String, Object>> selectRightRoles(String rightId);
 
 	/**
 	 * 批量新增权限角色

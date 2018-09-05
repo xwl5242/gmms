@@ -1,7 +1,11 @@
 package com.zhx.gmms.modules.sys.user.service.impl;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -11,9 +15,12 @@ import com.zhx.gmms.modules.sys.right.bean.SysRight;
 import com.zhx.gmms.modules.sys.right.service.SysRightService;
 import com.zhx.gmms.modules.sys.theme.bean.SysTheme;
 import com.zhx.gmms.modules.sys.theme.service.SysThemeService;
+import com.zhx.gmms.modules.sys.user.UserUtils;
 import com.zhx.gmms.modules.sys.user.bean.SysUser;
 import com.zhx.gmms.modules.sys.user.dao.SysUserDao;
 import com.zhx.gmms.modules.sys.user.service.SysUserService;
+import com.zhx.gmms.utils.DESUtils;
+import com.zhx.gmms.utils.DateUtils;
 import com.zhx.gmms.utils.UUIDGenerator;
 
 @Service
@@ -54,14 +61,6 @@ public class SysUserServiceImpl implements SysUserService {
 	}
 
 	/**
-	 * 更新用户信息
-	 */
-	@Transactional(readOnly=false)
-	public int editUser(SysUser user) {
-		return sysUserDao.update(user);
-	}
-
-	/**
 	 * 获取用户的主题信息
 	 */
 	@Transactional(readOnly=true)
@@ -77,6 +76,11 @@ public class SysUserServiceImpl implements SysUserService {
 		return sysRightService.queryRights(id);
 	}
 
+	@Override
+	public int editUser(SysUser editUser) {
+		return sysUserDao.update(editUser);
+	}
+	
 	/**
 	 * 更新用户的主题信息
 	 */
@@ -92,13 +96,85 @@ public class SysUserServiceImpl implements SysUserService {
 			SysUser user = new SysUser();
 			user.setId(userId);
 			user.setThemeId(sysTheme.getId());
-			ret += editUser(user);
+			ret += sysUserDao.update(user);
 		}else{
 			//已存在主题信息此时更新主题信息
 			sysTheme.setId(themeId);
 			ret += sysThemeService.editSysTheme(sysTheme);
 		}
 		return ret>=1?sysTheme:null;
+	}
+
+	/**
+	 * 获取用户所属角色，并查出所有角色，标注用户所拥有的角色
+	 */
+	@Transactional(readOnly=false)
+	public List<Map<String, Object>> findUserRoles(String userId) {
+		return sysUserDao.findUserRoles(userId);
+	}
+
+	/**
+	 * 新增或更新用户信息
+	 */
+	@Transactional(rollbackFor=Exception.class)
+	public boolean saveOrUpdateUser(SysUser user, String[] roleIds) throws Exception{
+		int deal=0,urcount=0;boolean result=false;
+		//如果用户的id不为空或null即为更新操作，否则新增操作
+		boolean isUpdate = StringUtils.isNotBlank(user.getId());
+		try{
+			//启用禁用状态
+			if(StringUtils.isBlank(user.getUseStatus())){
+				user.setUseStatus("NORMAL");
+			}
+			//处理用户的密码信息
+			if(StringUtils.isNotBlank(user.getPassword())){
+				//加密处理
+				String pw = DESUtils.encrypt(user.getPassword());
+				user.setPassword(pw);
+			}
+			//如果用户的id不为空或null即为更新操作，否则新增操作
+			if(isUpdate){
+				//更新
+				user.setUpdator(UserUtils.getCurUserId());
+				user.setUpdateTime(DateUtils.now2yyyyMMddHHmmssStr());
+				deal+=sysUserDao.update(user);
+			}else{
+				//新增
+				user.setId(UUIDGenerator.getUUID());
+				user.setCreator(UserUtils.getCurUserId());
+				user.setCreateTime(DateUtils.now2yyyyMMddHHmmssStr());
+				deal+=sysUserDao.insert(user);
+			}
+			//新增或更新用户和角色关系
+			if(null!=roleIds&&roleIds.length>0){
+				//更新操作需要先删除之前的关系，在新增新的关系
+				if(isUpdate){
+					urcount+=sysUserDao.findUserRoleCount(user.getId());
+					//删除之前的关系
+					deal+=sysUserDao.deleteUserRole(user.getId());
+				}
+				//新增用户和角色关系
+				Map<String,Object> map = new HashMap<String, Object>();
+				map.put("userId", user.getId());
+				map.put("list", Arrays.asList(roleIds));
+				deal+=sysUserDao.insertUserRoles(map);
+			}
+			//根据操作类型，来判断数据库操作是否成功
+			result = isUpdate?(deal==roleIds.length+urcount+1):(deal==roleIds.length+1);
+			if(!result) throw new Exception("数据库操作失败！");
+		}catch(Exception e){
+			result = false;
+			throw e;
+		}
+		return result;
+	}
+
+	/**
+	 * 删除用户
+	 */
+	@Override
+	public int removeUser(String userId) {
+		return sysUserDao.delete(Arrays.asList(userId));
 	}
 
 //	@Override

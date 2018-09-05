@@ -14,11 +14,11 @@
             <div class="media-body">
                 <h4 class="media-heading">
                    	 欢迎您，${Session.user.userCode}
-                    <small>${Session.user.userName}</small>
+                    <small>${Session.user.userName!}</small>
                 </h4>
                 <p>
                     <i class="icon icon-color wb-bell" aria-hidden="true"></i> 
-                                                  这是您第${Session.user.loginTotal}次登录，上次登录日期：${Session.user.lastLoginTime}，详细信息请查看
+                                                  这是您第${(Session.user.loginTotal?eval+1)!}次登录，上次登录日期：${Session.user.lastLoginTime!}，详细信息请查看
                     <a data-pjax href="/account/log" target="_blank">日志</a>，如果不是您本人登录，请及时
                     <a data-pjax href="/account/password" target="_blank">修改密码</a> 。
                 </p>
