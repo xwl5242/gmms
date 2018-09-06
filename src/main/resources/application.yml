@@ -46,20 +46,29 @@ mybatis:
   mapper-locations: classpath:mapper/*/*.xml
   type-aliases-package: com.zhx.gmms.**.bean
 
+#pagehelper分页插件配置
+pagehelper.helperDialect: mysql
+pagehelper.reasonable: true
+pagehelper.supportMethodsArguments: true
+pagehelper:
+  params: count=countSql
+
 #springboot健康检查配置
 management:
   endpoints:
     web:
       exposure:
         include: "*"       
+
+#日志级别配置
+logging:
+  level:
+    com.zhx.gmms.modules: debug
         
 #自定义配置属性
 #captch type:gif,png
 captchaType: png
 #captch char num
 captchaCharNum: 4
-
-#日志级别配置
-logging:
-  level:
-    com.zhx.gmms.modules: debug
+#日志开关
+open-log: false

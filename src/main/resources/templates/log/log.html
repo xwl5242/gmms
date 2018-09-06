@@ -1,0 +1,88 @@
+<#include FP>
+<@html>
+<#assign ctx=req.getContextPath()>
+<title>日志信息</title>
+<link rel="stylesheet" href="${ctx}/admui/plugins/bootstrap-daterangepicker/daterangepicker.css">
+<link rel="stylesheet" href="${ctx}/admui/plugins/select2/select2.css">
+<script src="${ctx}/admui/plugins/bootstrap-daterangepicker/moment.min.js" data-name="moment"></script>
+<script src="${ctx}/admui/plugins/bootstrap-daterangepicker/daterangepicker.min.js" data-deps="moment"></script>
+<script src="${ctx}/admui/plugins/select2/select2.min.js" data-name="select2"></script>
+<script src="${ctx}/admui/plugins/select2/i18n/zh-CN.min.js" data-deps="select2"></script>
+<div class="page page-full animation-fade page-logs">
+    <div class="page-header">
+        <h1 class="page-title">系统日志</h1>
+        <div class="page-header-actions">
+            <button type="button" class="btn btn-icon btn-info collapsed" data-toggle="collapse" data-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+                <i class="icon fa-filter"></i>
+            </button>
+        </div>
+    </div>
+    <div class="page-content">
+        <div class="collapse" id="collapseFilter" aria-expanded="true">
+            <div class="panel">
+                <div class="panel-body">
+                    <form class="form-inline" id="logForm">
+                        <div class="form-group">
+                            <div class="input-daterange input-group">
+                                <span class="input-group-addon"><i class="icon wb-calendar" aria-hidden="true"></i></span>
+                                <input type="text" class="form-control" id="filter-date" placeholder="起至日期">
+                                <input type="hidden" name="startDate">
+                                <input type="hidden" name="endDate">
+                                <a class="input-group-addon padding-horizontal-10" role="button">
+                                    <i class="icon wb-close date-close"></i></a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <select class="form-control" name="userId" data-plugin="select2">
+                                <option value="">所有用户</option>
+                                <#list users as user>
+                                	<option value="${user.id!}">${user.userCode!}</option>
+                                </#list>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success"><i class="icon fa-search"></i> 查找</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <div class="panel">
+            <header class="panel-heading">
+                <h3 class="panel-title">日志信息</h3>
+            </header>
+            <div class="panel-body">
+				<link rel="stylesheet" href="${ctx}/admui/plugins/datatables-bootstrap/dataTables.bootstrap.css">
+				<link rel="stylesheet" href="${ctx}/admui/plugins/datatables-responsive/dataTables.responsive.css">
+				<table class="table table-bordered table-hover text-nowrap dataTable table-striped width-full margin-vertical-10" id="logList" data-column-defs='[{ "orderable": false, "targets": 2}]'>
+				    <thead>
+				    <tr>
+				        <th>类名称</th>
+				        <th>方法名称</th>
+				        <th>请求</th>
+				        <th>用户</th>
+				        <th>用户IP</th>
+				        <th>时间</th>
+				    </tr>
+				    </thead>
+				    <tfoot>
+				    <tr>
+				        <th>类名称</th>
+				        <th>方法名称</th>
+				        <th>请求</th>
+				        <th>用户</th>
+				        <th>用户IP</th>
+				        <th>时间</th>
+				    </tr>
+				    </tfoot>
+				</table>
+				<script src="${ctx}/admui/plugins/datatables/jquery.dataTables.min.js" data-name="dataTables"></script>
+				<script src="${ctx}/admui/plugins/datatables-bootstrap/dataTables.bootstrap.min.js" data-deps="dataTables"></script>
+				<script src="${ctx}/admui/plugins/datatables-responsive/dataTables.responsive.min.js" data-deps="dataTables"></script>
+				<script src="${ctx}/admui/js/system/log.js"></script>
+            </div>
+        </div>
+    </div>
+</div>
+</@html>

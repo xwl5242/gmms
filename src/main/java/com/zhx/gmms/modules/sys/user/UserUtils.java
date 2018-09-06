@@ -23,6 +23,15 @@ public class UserUtils {
 	 * @return
 	 */
 	public static String getCurUserId(){
-		return sessionMap.get(Const.SESSION_USER_ID)+"";
+		Object o = sessionMap.get(Const.SESSION_USER_ID);
+		return o==null?"":o.toString();
+	}
+	
+	/**
+	 * 获取当前用户的userCode
+	 * @return
+	 */
+	public static String getCurUserCode(){
+		return null==getCurUser()?"":getCurUser().getUserCode();
 	}
 }

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhx.gmms.modules.sys.log.dao.SysLogDao" >
+  <resultMap id="BaseResultMap" type="com.zhx.gmms.modules.sys.log.bean.SysLog" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="CLASS_NAME" property="className" jdbcType="VARCHAR" />
+    <result column="METHOD_NAME" property="methodName" jdbcType="VARCHAR" />
+    <result column="REMOTE_IP" property="remoteIp" jdbcType="VARCHAR" />
+    <result column="REQ_URI" property="reqUri" jdbcType="VARCHAR" />
+    <result column="CREATOR" property="creator" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, CLASS_NAME, METHOD_NAME, REMOTE_IP, REQ_URI, CREATOR, CREATE_TIME
+  </sql>
+  <select id="get" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_log
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 分页查询日志信息 -->
+  <select id="findPageList" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	SELECT ID, CLASS_NAME, METHOD_NAME, REMOTE_IP, REQ_URI, 
+  		(select user_code from sys_user where id=creator) CREATOR, CREATE_TIME 
+  	FROM sys_log 
+  	where 1=1 
+  	<if test="startDate!=null and startDate!=''"> and create_time &gt;= str_to_date(#{startDate},'%Y-%m-%d %H:%i:%s')</if>
+  	<if test="endDate!=null and endDate!=''"> and create_time &lt;= str_to_date(#{endDate},'%Y-%m-%d %H:%i:%s')</if>
+  	<if test="userId!=null and userId!=''"> and creator=#{userId}</if>
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from sys_log
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zhx.gmms.modules.sys.log.bean.SysLog" >
+    insert into sys_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="className != null" >
+        CLASS_NAME,
+      </if>
+      <if test="methodName != null" >
+        METHOD_NAME,
+      </if>
+      <if test="remoteIp != null" >
+        REMOTE_IP,
+      </if>
+      <if test="reqUri != null" >
+        REQ_URI,
+      </if>
+      <if test="creator != null" >
+        CREATOR,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="className != null" >
+        #{className,jdbcType=VARCHAR},
+      </if>
+      <if test="methodName != null" >
+        #{methodName,jdbcType=VARCHAR},
+      </if>
+      <if test="remoteIp != null" >
+        #{remoteIp,jdbcType=VARCHAR},
+      </if>
+      <if test="reqUri != null" >
+        #{reqUri,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="com.zhx.gmms.modules.sys.log.bean.SysLog" >
+    update sys_log
+    <set >
+      <if test="className != null" >
+        CLASS_NAME = #{className,jdbcType=VARCHAR},
+      </if>
+      <if test="methodName != null" >
+        METHOD_NAME = #{methodName,jdbcType=VARCHAR},
+      </if>
+      <if test="remoteIp != null" >
+        REMOTE_IP = #{remoteIp,jdbcType=VARCHAR},
+      </if>
+      <if test="reqUri != null" >
+        REQ_URI = #{reqUri,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        CREATOR = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

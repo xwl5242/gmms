@@ -19,12 +19,12 @@
                 <p>
                     <i class="icon icon-color wb-bell" aria-hidden="true"></i> 
                                                   这是您第${(Session.user.loginTotal?eval+1)!}次登录，上次登录日期：${Session.user.lastLoginTime!}，详细信息请查看
-                    <a data-pjax href="/account/log" target="_blank">日志</a>，如果不是您本人登录，请及时
-                    <a data-pjax href="/account/password" target="_blank">修改密码</a> 。
+                    <a data-pjax href="${ctx}/system/account?from=log" target="_blank">日志</a>，如果不是您本人登录，请及时
+                    <a data-pjax href="${ctx}/system/account?from=password" target="_blank">修改密码</a> 。
                 </p>
             </div>
             <div class="media-right">
-                <a href="/system/account" data-pjax target="_blank" class="btn btn-outline btn-success btn-outline btn-sm">账户管理</a>
+                <a href="${ctx}/system/account" data-pjax target="_blank" class="btn btn-outline btn-success btn-outline btn-sm">账户管理</a>
             </div>
         </div>
 	</div>

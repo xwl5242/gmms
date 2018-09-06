@@ -15,17 +15,18 @@
                 searching: false,
                 pagingType: "simple_numbers",
                 columns: [
-                    {"data": "url"},
-                    {"data": "type"},
-                    {"data": "params"},
+                    {"data": "className"},
+                    {"data": "methodName"},
+                    {"data": "reqUri"},
                     {
-                        "data": "user",
-                        "render": function (data) {
-                            return data === null ? null : data.loginName;
-                        }
+                        "data": "creator"
+//                        	,
+//                        "render": function (data) {
+//                            return data === null ? null : data.loginName;
+//                        }
                     },
-                    {"data": "userIp"},
-                    {"data": "logTime"}
+                    {"data": "remoteIp"},
+                    {"data": "createTime"}
                 ],
                 ajax: function (data, callback) {
                     var param, column, dir,
@@ -46,11 +47,11 @@
 
                     if ($pageContent.find('#accountLog').length > 0) {
                         userId = $('#admui-signOut').data('user');
-                        param += '&user.userId=' + userId;
+                        param += '&userId=' + userId;
                     }
 
                     $.ajax({
-                        url: $.ctx + '/log/query',
+                        url: $.ctx + 'log/pagelist',
                         cache: false,
                         data: param,
                         dataType: "JSON",
