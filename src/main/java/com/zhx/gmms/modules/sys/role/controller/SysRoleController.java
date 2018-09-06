@@ -70,7 +70,7 @@ public class SysRoleController extends BaseController {
 	 */
 	@PostMapping("/save")
 	@ResponseBody
-	public String saveRole(String roleId,String roleName,String[] roleAuth){
+	public String saveRole(String roleId,String roleName,String[] roleAuth) throws Exception{
 		String id = roleService.saveRole(roleId,roleName,roleAuth);
 		return toJsonKV(null!=id,"id",id);
 	}
@@ -81,8 +81,7 @@ public class SysRoleController extends BaseController {
 	 */
 	@PostMapping("/delete")
 	@ResponseBody
-	public String deleteRole(String roleId){
-		int r = roleService.deleteRole(roleId);
-		return toJson(r>=1);
+	public String deleteRole(String roleId) throws Exception{
+		return toJson(roleService.deleteRole(roleId));
 	}
 }

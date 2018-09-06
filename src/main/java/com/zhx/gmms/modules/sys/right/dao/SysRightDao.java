@@ -27,7 +27,7 @@ public interface SysRightDao extends CrudDao<SysRight>{
 	 * @param list
 	 * @return
 	 */
-	int insertRightRoles(List<Map<String, String>> list);
+	int insertRightRoles(Map<String,Object> m);
 
 	/**
 	 * 某一菜单所有子菜单的最大排序值

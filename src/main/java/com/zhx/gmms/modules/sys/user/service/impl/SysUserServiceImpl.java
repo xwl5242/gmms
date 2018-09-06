@@ -37,14 +37,6 @@ public class SysUserServiceImpl implements SysUserService {
 	private SysThemeService sysThemeService;
 
 	/**
-	 * 主键获取用户信息
-	 */
-	@Transactional(readOnly=true)
-	public SysUser get(String id) {
-		return sysUserDao.get(id);
-	}
-
-	/**
 	 * 获取用户list
 	 */
 	@Transactional(readOnly=true)
@@ -76,31 +68,43 @@ public class SysUserServiceImpl implements SysUserService {
 		return sysRightService.queryRights(id);
 	}
 
-	@Override
-	public int editUser(SysUser editUser) {
-		return sysUserDao.update(editUser);
+	/**
+	 * 修改用户信息
+	 */
+	@Transactional(rollbackFor=Exception.class)
+	public int editUser(SysUser editUser) throws Exception{
+		int editRet = sysUserDao.update(editUser);
+		if(editRet==0) throw new Exception("修改用户信息失败！");
+		return editRet;
 	}
 	
 	/**
 	 * 更新用户的主题信息
 	 */
-	@Transactional(readOnly=false)
-	public SysTheme updateTheme(SysTheme sysTheme,String userId) {
+	@Transactional(rollbackFor=Exception.class)
+	public SysTheme updateTheme(SysTheme sysTheme,String userId) throws Exception{
 		int ret = 0;
-		//业务逻辑：如果用户的主题id为-1，则证明用户第一次自定义主题信息，此时需要新增主题信息，并更新用户主题的关联关系。否则，直接更新
-		String themeId = get(userId).getThemeId();
-		if("-1".equals(themeId)){
-			//第一次自定义主题信息，新增并修改关联关系
-			sysTheme.setId(UUIDGenerator.getUUID());
-			ret += sysThemeService.saveSysTheme(sysTheme);
-			SysUser user = new SysUser();
-			user.setId(userId);
-			user.setThemeId(sysTheme.getId());
-			ret += sysUserDao.update(user);
-		}else{
-			//已存在主题信息此时更新主题信息
-			sysTheme.setId(themeId);
-			ret += sysThemeService.editSysTheme(sysTheme);
+		try{
+			//业务逻辑：如果用户的主题id为-1，则证明用户第一次自定义主题信息，此时需要新增主题信息，并更新用户主题的关联关系。否则，直接更新
+			String themeId = UserUtils.getCurUser().getThemeId();
+			if("-1".equals(themeId)){
+				//第一次自定义主题信息，新增并修改关联关系
+				sysTheme.setId(UUIDGenerator.getUUID());
+				ret += sysThemeService.saveSysTheme(sysTheme);
+				SysUser user = new SysUser();
+				user.setId(userId);
+				user.setThemeId(sysTheme.getId());
+				ret += sysUserDao.update(user);
+				if(ret!=2) throw new Exception("用户更新主题失败！");
+			}else{
+				//已存在主题信息此时更新主题信息
+				sysTheme.setId(themeId);
+				ret += sysThemeService.editSysTheme(sysTheme);
+				if(ret!=1) throw new Exception("用户更新主题失败！");
+			}
+		}catch(Exception e){
+			ret = 0;
+			throw e;
 		}
 		return ret>=1?sysTheme:null;
 	}
@@ -172,7 +176,7 @@ public class SysUserServiceImpl implements SysUserService {
 	/**
 	 * 删除用户
 	 */
-	@Override
+	@Transactional(rollbackFor=Exception.class)
 	public int removeUser(String userId) {
 		return sysUserDao.delete(Arrays.asList(userId));
 	}

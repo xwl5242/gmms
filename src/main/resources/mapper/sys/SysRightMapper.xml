@@ -92,11 +92,11 @@
   </delete>
   
   <!-- insertRightRoles批量新增权限角色 -->
-  <insert id="insertRightRoles" parameterType="java.util.List">
+  <insert id="insertRightRoles" parameterType="java.util.Map">
       insert into sys_role_right(id,role_id,right_id) values
       <foreach collection="list" item="item" index="index"
           separator=",">
-          (#{item.id},#{item.roleId},#{item.rightId})
+          (REPLACE(UUID(),"-",""),#{item.roleId},#{rightId})
       </foreach>
   </insert>
   

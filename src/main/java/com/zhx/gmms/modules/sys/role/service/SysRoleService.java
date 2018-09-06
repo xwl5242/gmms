@@ -42,13 +42,13 @@ public interface SysRoleService {
 	 * @param roleAuth
 	 * @return
 	 */
-	public String saveRole(String roleId,String roleName, String[] roleAuth);
+	public String saveRole(String roleId,String roleName, String[] roleAuth) throws Exception;
 
 	/**
 	 * 删除角色
 	 * @param roleId
 	 * @return
 	 */
-	public int deleteRole(String roleId);
+	public boolean deleteRole(String roleId) throws Exception;
 
 }

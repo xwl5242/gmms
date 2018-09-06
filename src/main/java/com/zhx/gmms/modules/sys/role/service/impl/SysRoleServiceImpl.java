@@ -1,6 +1,6 @@
 package com.zhx.gmms.modules.sys.role.service.impl;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 	@Autowired
 	private SysRightDao rightDao;
 
-	@Override
+	@Transactional(readOnly=true)
 	public List<SysRole> findList(SysRole sysRole) {
 		return roleDao.findList(sysRole);
 	}
@@ -61,55 +61,71 @@ public class SysRoleServiceImpl implements SysRoleService {
 	/**
 	 * 新增角色
 	 */
-	@Override
-	public String saveRole(String roleId,String roleName, String[] roleAuth) {
-		//角色id，如果角色id为空或null为新增，如果角色id存在值为更新
-		String id = StringUtils.isNotBlank(roleId)?roleId:UUIDGenerator.getUUID();
-		SysRole role = new SysRole();
-		role.setId(id);
-		role.setRoleName(roleName);
-		role.setRoleDesc(roleName);
-		//roleId不为null和空 即为更新操作
-		int ret = 0;
-		if(StringUtils.isNotBlank(roleId)){
-			//更新
-			ret += roleDao.update(role);
-		}else{
-			//新增
-			ret += roleDao.insert(role);
-		}
-		//新增角色
-		if(null!=roleAuth&&roleAuth.length>0){
-			//遍历角色拥有的权限，并批量新增
-			List<Map<String,String>> list = new ArrayList<Map<String,String>>();
-			for(String ra:roleAuth){
-				Map<String,String> map = new HashMap<String, String>();
-				map.put("id", UUIDGenerator.getUUID());
-				map.put("roleId", role.getId());
-				map.put("rightId", ra);
-				list.add(map);
-			}
-			//更新角色信息，需要更新角色的权限信息，先删除之前的关联关系，在添加新的关系
+	@Transactional(rollbackFor=Exception.class)
+	public String saveRole(String roleId,String roleName, String[] roleAuth) throws Exception{
+		String id = "";
+		try{
+			int deal=0,count=0;
+			boolean isUpdate = StringUtils.isNotBlank(roleId);
+			SysRole role = new SysRole();
+			//角色id，如果角色id为空或null为新增，如果角色id存在值为更新
+			role.setRoleName(roleName);
+			role.setRoleDesc(roleName);
+			//roleId不为null和空 即为更新操作
 			if(StringUtils.isNotBlank(roleId)){
-				ret +=roleDao.deleteRoleRight(roleId);
+				//更新
+				role.setId(roleId);
+				deal += roleDao.update(role);
+			}else{
+				//新增
+				role.setId(UUIDGenerator.getUUID());
+				deal += roleDao.insert(role);
 			}
-			//添加新的关系
-			ret += rightDao.insertRightRoles(list);
+			//新增角色
+			if(null!=roleAuth&&roleAuth.length>0){
+				//更新角色信息，需要更新角色的权限信息，先删除之前的关联关系，在添加新的关系
+				if(StringUtils.isNotBlank(roleId)){
+					count+=roleDao.roleUserCounts().size();
+					deal +=roleDao.deleteRoleRight(roleId);
+				}
+				//添加新的关系
+				Map<String,Object> map = new HashMap<String, Object>();
+				map.put("roleId", role.getId());
+				map.put("list", Arrays.asList(roleAuth));
+				deal += roleDao.insertRoleRights(map);
+			}
+			boolean flag = isUpdate?(deal==count+roleAuth.length+1):(deal==roleAuth.length+1);
+			if(!flag) throw new Exception("角色信息操作异常！");
+			id=role.getId();
+		}catch(Exception e){
+			id=null;throw e;
 		}
-		return ret==roleAuth.length+1?id:null;
+		return id;
 	}
 
 	/**
 	 * 删除角色
 	 */
-	@Override
-	public int deleteRole(String roleId) {
-		List<String> roleIds = new ArrayList<String>();
-		roleIds.add(roleId);
-		int r = roleDao.delete(roleIds);
-		r+=roleDao.deleteRoleRight(roleId);
-		r+=roleDao.deleteRoleUser(roleId);
-		return r;
+	@Transactional(rollbackFor=Exception.class)
+	public boolean deleteRole(String roleId) throws Exception{
+		boolean ret = false;
+		try{
+			int deal=0,count=0;
+			//删除角色
+			deal += roleDao.delete(Arrays.asList(roleId));
+			//删除角色和权限的关联
+			deal += roleDao.deleteRoleRight(roleId);
+			//删除角色和用户的关联
+			deal += roleDao.deleteRoleUser(roleId);
+			//查询该角色关联的用户和权限的个数
+			count+=roleDao.selectUserByRole(roleId).size();
+			count+=roleDao.selectRightByRole(roleId).size();
+			ret = deal+1==count;
+			if(count!=deal+1) throw new Exception("删除角色信息异常！");
+		}catch(Exception e){
+			ret = false;throw e;
+		}
+		return ret;
 	}
 
 }

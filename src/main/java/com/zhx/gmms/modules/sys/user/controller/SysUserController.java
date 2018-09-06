@@ -39,17 +39,6 @@ public class SysUserController extends BaseController {
 //	}
 	
 	/**
-	 * 主键获取用户信息
-	 * @param id 主键
-	 * @return
-	 */
-	@GetMapping("/{id}")
-	@ResponseBody
-	public SysUser getUser(@PathVariable("id") String id){
-		return sysUserService.get(id);
-	}
-	
-	/**
 	 * 跳转到用户列表页面
 	 * @param user
 	 * @return
@@ -126,7 +115,7 @@ public class SysUserController extends BaseController {
 	 */
 	@PostMapping("/remove")
 	@ResponseBody
-	public String removeUser(String userId){
+	public String removeUser(String userId) throws Exception{
 		int r = sysUserService.removeUser(userId);
 		return toJson(r==1);
 	}
@@ -138,7 +127,7 @@ public class SysUserController extends BaseController {
 	 */
 	@PostMapping("/updateUseStatus")
 	@ResponseBody
-	public String updateUseStatus(SysUser user){
+	public String updateUseStatus(SysUser user) throws Exception{
 		int r = sysUserService.editUser(user);
 		return toJson(r==1);
 	}

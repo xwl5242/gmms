@@ -77,6 +77,15 @@
   	delete from sys_user_role where role_id = #{roleId}
   </delete>
   
+  <!-- insertRightRoles批量新增权限角色 -->
+  <insert id="insertRoleRights" parameterType="java.util.Map">
+      insert into sys_role_right(id,role_id,right_id) values
+      <foreach collection="list" item="item" index="index"
+          separator=",">
+          (REPLACE(UUID(),"-",""),#{roleId},#{item.rightId})
+      </foreach>
+  </insert>
+  
   <!-- 新增 -->
   <insert id="insert" parameterType="com.zhx.gmms.modules.sys.role.bean.SysRole" >
     insert into sys_role

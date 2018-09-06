@@ -67,8 +67,7 @@ public class SysRightController extends BaseController {
 	public String saveTopRight(String menu) throws Exception{
 		MenuData md = objectMapper.readValue(menu, MenuData.class);
 		//保存权限，前端页面新建菜单的形式。以MenuData的类型
-		int r = rightService.saveTopRightByMenuData(md);
-		return toJson(r==md.getAuth().size()+1);
+		return toJson(rightService.saveTopRightByMenuData(md));
 	}
 	
 	/**
@@ -83,8 +82,7 @@ public class SysRightController extends BaseController {
 		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);//忽略javabean对象中不存在的字段
 		objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);//允许空的字符串转为null
 		MenuData md = objectMapper.readValue(menu, MenuData.class);
-		int r = rightService.saveSubRightByMenuData(md);
-		return toJson(r>=1);
+		return toJson(rightService.saveSubRightByMenuData(md));
 	}
 	
 	/**
@@ -95,8 +93,7 @@ public class SysRightController extends BaseController {
 	@ResponseBody
 	public String updateTopOrder(String topMenus) throws Exception{
 		List<Map<String,Object>> list = objectMapper.readValue(topMenus, List.class);
-		int r = rightService.updateTopOrder(list);
-		return toJson(r==list.size());
+		return toJson(rightService.updateTopOrder(list));
 	}
 	
 	/**
@@ -106,10 +103,9 @@ public class SysRightController extends BaseController {
 	 */
 	@PostMapping("/delete/{id}")
 	@ResponseBody
-	public String deleteRight(@PathVariable String id){
+	public String deleteRight(@PathVariable String id) throws Exception{
 		logger.info("删除权限...权限id："+id);
-		int i = rightService.removeRight(id);
-		return toJson(i>0);
+		return toJson(rightService.removeRight(id));
 	}
 	
 	/**

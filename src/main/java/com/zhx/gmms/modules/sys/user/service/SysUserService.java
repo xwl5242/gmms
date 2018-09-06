@@ -10,13 +10,6 @@ import com.zhx.gmms.modules.sys.user.bean.SysUser;
 public interface SysUserService {
 
 	/**
-	 * 主键获取用户信息
-	 * @param id 主键
-	 * @return
-	 */
-	SysUser get(String id);
-
-	/**
 	 * 获取用户列表
 	 * @param user 用户信息
 	 * @return
@@ -49,7 +42,7 @@ public interface SysUserService {
 	 * @param sysTheme
 	 * @return
 	 */
-	SysTheme updateTheme(SysTheme sysTheme,String userId);
+	SysTheme updateTheme(SysTheme sysTheme,String userId) throws Exception;
 
 	/**
 	 * 获取用户所属角色，并查出所有角色，标注用户所拥有的角色
@@ -71,14 +64,14 @@ public interface SysUserService {
 	 * @param editUser
 	 * @return
 	 */
-	int editUser(SysUser editUser);
+	int editUser(SysUser editUser) throws Exception;
 
 	/**
 	 * 删除用户
 	 * @param userId
 	 * @return
 	 */
-	int removeUser(String userId);
+	int removeUser(String userId) throws Exception;
 
 //	void initQuota();
 

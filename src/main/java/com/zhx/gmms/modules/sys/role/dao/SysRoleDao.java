@@ -31,13 +31,6 @@ public interface SysRoleDao extends CrudDao<SysRole> {
 	List<SysRight> selectRightByRole(String roleId);
 
 	/**
-	 * 批量新增角色和权限关系
-	 * @param list
-	 * @return
-	 */
-	int insertRoleRights(List<Map<String, String>> list);
-
-	/**
 	 * 删除角色和权限关系
 	 * @param roleId
 	 * @return
@@ -50,5 +43,12 @@ public interface SysRoleDao extends CrudDao<SysRole> {
 	 * @return
 	 */
 	int deleteRoleUser(String roleId);
+
+	/**
+	 * 新增角色和权限关系
+	 * @param map
+	 * @return
+	 */
+	int insertRoleRights(Map<String, Object> map);
 
 }

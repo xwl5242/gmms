@@ -33,27 +33,27 @@ public interface SysRightService {
 	 * @param rightId
 	 * @return
 	 */
-	int removeRight(String id);
+	boolean removeRight(String id) throws Exception;
 
 	/**
 	 * 保存顶部权限，前端页面新建菜单的形式。以MenuData的类型
 	 * @param md
 	 * @return
 	 */
-	int saveTopRightByMenuData(MenuData md);
+	boolean saveTopRightByMenuData(MenuData md) throws Exception;
 
 	/**
 	 * 保存子权限，前端页面新建菜单的形式。以MenuData的类型
 	 * @param md
 	 * @return
 	 */
-	int saveSubRightByMenuData(MenuData md);
+	boolean saveSubRightByMenuData(MenuData md) throws Exception;
 
 	/**
 	 * 更新顶部菜单顺序
 	 * @param list
 	 * @return
 	 */
-	int updateTopOrder(List<Map<String,Object>> list) throws Exception;
+	boolean updateTopOrder(List<Map<String,Object>> list) throws Exception;
 
 }
