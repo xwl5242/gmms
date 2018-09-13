@@ -24,6 +24,11 @@ public class SysLogController extends BaseController {
 	@Autowired
 	private SysLogService logService;
 
+	/**
+	 * 跳转到日志页面
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/list")
 	public String list(Model model){
 		List<SysUser> list = logService.findAllUser();
@@ -31,6 +36,16 @@ public class SysLogController extends BaseController {
 		return "log/log";
 	}
 	
+	/**
+	 * 分页查询日志
+	 * @param startDate 
+	 * @param endDate
+	 * @param userId
+	 * @param start
+	 * @param limit
+	 * @param dir
+	 * @return
+	 */
 	@GetMapping("/pagelist")
 	@ResponseBody
 	public String pageList(String startDate,String endDate,String userId,int start,int limit,String dir){
@@ -45,5 +60,17 @@ public class SysLogController extends BaseController {
 			map.put("data", logPage.getResult());
 		}
 		return toJson(null!=logPage,map);
+	}
+	
+	/**
+	 * 查询用户的日志数
+	 * @param userId
+	 * @return
+	 */
+	@GetMapping("/logCount")
+	@ResponseBody
+	public String logCount(String userId){
+		int count = logService.findCount(userId);
+		return toJsonKV(true, "logcount", count);
 	}
 }

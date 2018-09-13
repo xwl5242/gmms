@@ -1,12 +1,44 @@
+<#include FP>
+<@html>
+<#assign ctx=req.getContextPath()>
+<title>用户日志</title>
+<link rel="stylesheet" href="${ctx}/admui/plugins/datatables-bootstrap/dataTables.bootstrap.css">
+<link rel="stylesheet" href="${ctx}/admui/plugins/datatables-responsive/dataTables.responsive.css">
 <div class="animation-slide-left tab-message active" id="accountContent">
-<link rel="stylesheet" href="http://cdn.admui.com/demo/pjax/1.4.0/vendor/datatables-bootstrap/dataTables.bootstrap.css">
-<link rel="stylesheet" href="http://cdn.admui.com/demo/pjax/1.4.0/vendor/datatables-responsive/dataTables.responsive.css">
-<div id="logList_wrapper" class="dataTables_wrapper form-inline dt-bootstrap"><div class="row"><div class="col-xs-6"><div class="hidden-xs"><div class="dataTables_length" id="logList_length"><label>每页显示 <select name="logList_length" aria-controls="logList" class="form-control input-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> 条</label></div></div></div><div class="col-xs-6"></div></div><div class="row"><div class="col-xs-12"><table class="table table-bordered table-hover text-nowrap dataTable table-striped width-full margin-vertical-10 dtr-inline collapsed" id="logList" data-column-defs="[{ &quot;orderable&quot;: false, &quot;targets&quot;: 2}]" role="grid" aria-describedby="logList_info">
-    <thead>
-    <tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="logList" rowspan="1" colspan="1" aria-sort="ascending" aria-label="路径降序排列">路径</th><th class="sorting" tabindex="0" aria-controls="logList" rowspan="1" colspan="1" aria-label="名称升序排列">名称</th><th class="sorting_disabled" rowspan="1" colspan="1" aria-label="参数">参数</th><th class="sorting" tabindex="0" aria-controls="logList" rowspan="1" colspan="1" aria-label="用户升序排列" style="display: none;">用户</th><th class="sorting" tabindex="0" aria-controls="logList" rowspan="1" colspan="1" aria-label="用户IP升序排列" style="display: none;">用户IP</th><th class="sorting" tabindex="0" aria-controls="logList" rowspan="1" colspan="1" aria-label="时间升序排列" style="display: none;">时间</th></tr>
-    </thead>
-    <tfoot>
-    <tr><th rowspan="1" colspan="1">路径</th><th rowspan="1" colspan="1">名称</th><th rowspan="1" colspan="1">参数</th><th rowspan="1" colspan="1" style="display: none;">用户</th><th rowspan="1" colspan="1" style="display: none;">用户IP</th><th rowspan="1" colspan="1" style="display: none;">时间</th></tr>
-    </tfoot>
-<tbody><tr role="row" class="odd"><td class="sorting_1" tabindex="0">/system/menu</td><td>访问菜单管理</td><td>[_pjax=#admui-pageContent _=1502164198542 ]</td><td style="display: none;">xiaxuan@admui_demo</td><td style="display: none;">218.13.182.242</td><td style="display: none;">2017-08-08 11:52:24</td></tr><tr role="row" class="even"><td class="sorting_1" tabindex="0">/system/menu</td><td>访问菜单管理</td><td>[_pjax=#admui-pageContent _=1502269428597 ]</td><td style="display: none;">xiaxuan@admui_demo</td><td style="display: none;">59.61.36.27</td><td style="display: none;">2017-08-09 17:03:28</td></tr><tr role="row" class="odd"><td class="sorting_1" tabindex="0">/system/menu</td><td>访问菜单管理</td><td>[_pjax=#admui-pageContent _=1502611093776 ]</td><td style="display: none;">xiaxuan@admui_demo</td><td style="display: none;">1.13.15.4</td><td style="display: none;">2017-08-13 16:10:04</td></tr><tr role="row" class="even"><td class="sorting_1" tabindex="0">/system/menu</td><td>访问菜单管理</td><td>[_pjax=#admui-pageContent _=1502780288249 ]</td><td style="display: none;">xiaxuan@admui_demo</td><td style="display: none;">60.191.37.34</td><td style="display: none;">2017-08-15 15:00:20</td></tr><tr role="row" class="odd"><td class="sorting_1" tabindex="0">/system/menu</td><td>访问菜单管理</td><td>[_pjax=#admui-pageContent _=1502872393599 ]</td><td style="display: none;">xiaxuan@admui_demo</td><td style="display: none;">223.210.24.87</td><td style="display: none;">2017-08-16 16:34:35</td></tr><tr role="row" class="even"><td class="sorting_1" tabindex="0">/system/menu</td><td>访问菜单管理</td><td>[_pjax=#admui-pageContent _=1503018301314 ]</td><td style="display: none;">xiaxuan@admui_demo</td><td style="display: none;">123.161.192.20</td><td style="display: none;">2017-08-18 09:04:56</td></tr><tr role="row" class="odd"><td class="sorting_1" tabindex="0">/system/menu</td><td>访问菜单管理</td><td>[_pjax=#admui-pageContent _=1503481970720 ]</td><td style="display: none;">xiaxuan@admui_demo</td><td style="display: none;">59.173.55.198</td><td style="display: none;">2017-08-23 17:59:37</td></tr><tr role="row" class="even"><td class="sorting_1" tabindex="0">/system/menu</td><td>访问菜单管理</td><td>[]</td><td style="display: none;">xiaxuan@admui_demo</td><td style="display: none;">125.34.233.130</td><td style="display: none;">2017-08-24 22:37:53</td></tr><tr role="row" class="odd"><td class="sorting_1" tabindex="0">/system/menu</td><td>访问菜单管理</td><td>[_pjax=#admui-pageContent _=1503730649503 ]</td><td style="display: none;">xiaxuan@admui_demo</td><td style="display: none;">115.206.117.254</td><td style="display: none;">2017-08-26 15:03:33</td></tr><tr role="row" class="even"><td class="sorting_1" tabindex="0">/system/menu</td><td>访问菜单管理</td><td>[_pjax=#admui-pageContent _=1503910606210 ]</td><td style="display: none;">xiaxuan@admui_demo</td><td style="display: none;">183.238.59.131</td><td style="display: none;">2017-08-28 17:23:56</td></tr></tbody></table><div id="logList_processing" class="dataTables_processing" style="display: none;">正在处理，请稍后…</div></div></div><div class="row"><div class="col-sm-5"><div class="dataTables_info" id="logList_info" role="status" aria-live="polite">第 1 至 10 项，共 34,607 项</div></div><div class="col-sm-7"><div class="dataTables_paginate paging_simple_numbers" id="logList_paginate"><ul class="pagination"><li class="paginate_button previous disabled" id="logList_previous"><a href="#" aria-controls="logList" data-dt-idx="0" tabindex="0"><i class="icon wb-chevron-left-mini"></i></a></li><li class="paginate_button active"><a href="#" aria-controls="logList" data-dt-idx="1" tabindex="0">1</a></li><li class="paginate_button "><a href="#" aria-controls="logList" data-dt-idx="2" tabindex="0">2</a></li><li class="paginate_button "><a href="#" aria-controls="logList" data-dt-idx="3" tabindex="0">3</a></li><li class="paginate_button "><a href="#" aria-controls="logList" data-dt-idx="4" tabindex="0">4</a></li><li class="paginate_button "><a href="#" aria-controls="logList" data-dt-idx="5" tabindex="0">5</a></li><li class="paginate_button disabled" id="logList_ellipsis"><a href="#" aria-controls="logList" data-dt-idx="6" tabindex="0">…</a></li><li class="paginate_button "><a href="#" aria-controls="logList" data-dt-idx="7" tabindex="0">3461</a></li><li class="paginate_button next" id="logList_next"><a href="#" aria-controls="logList" data-dt-idx="8" tabindex="0"><i class="icon wb-chevron-right-mini"></i></a></li></ul></div></div></div></div>
+<div id="logList_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+	<div class="panel">
+            <header class="panel-heading">
+                <h3 class="panel-title">日志信息</h3>
+            </header>
+            <div class="panel-body">
+				<table class="table table-bordered table-hover text-nowrap dataTable table-striped width-full margin-vertical-10" id="logList" data-column-defs='[{ "orderable": false, "targets": 2}]'>
+				    <thead>
+				    <tr>
+				        <th>类名称</th>
+				        <th>方法名称</th>
+				        <th>请求</th>
+				        <th>用户</th>
+				        <th>用户IP</th>
+				        <th>时间</th>
+				    </tr>
+				    </thead>
+				    <tfoot>
+				    <tr>
+				        <th>类名称</th>
+				        <th>方法名称</th>
+				        <th>请求</th>
+				        <th>用户</th>
+				        <th>用户IP</th>
+				        <th>时间</th>
+				    </tr>
+				    </tfoot>
+				</table>
+				<script src="${ctx}/admui/plugins/datatables/jquery.dataTables.min.js" data-name="dataTables"></script>
+				<script src="${ctx}/admui/plugins/datatables-bootstrap/dataTables.bootstrap.min.js" data-deps="dataTables"></script>
+				<script src="${ctx}/admui/plugins/datatables-responsive/dataTables.responsive.min.js" data-deps="dataTables"></script>
+				<script src="${ctx}/admui/js/system/log.js"></script>
+            </div>
+        </div>
 </div>
+</div>
+</@html>

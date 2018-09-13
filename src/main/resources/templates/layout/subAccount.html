@@ -1,0 +1,99 @@
+<#macro html>
+<#assign ctx=req.getContextPath()>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>首页</title>
+	<#include "/commons/head.html">		
+	<link rel="stylesheet" href="${ctx}/admui/css/system/account.css">
+	<link rel="stylesheet" href="${ctx}/admui/plugins/jquery-strength/jquery-strength.css">
+	<link rel="stylesheet" href="${ctx}/admui/plugins/alertify-js/alertify.css">
+</head>
+<body class="${userTheme.tabFlag!} ${userTheme.menuDisplay!} ${(userTheme.menuDisplay=='site-menubar-fold')?string(userTheme.menuTxtIcon,'')}">
+<#include "/commons/menu.html">
+	<main class="site-page">
+	    <div class="page-container" id="admui-pageContent">
+	    	<div class="page animation-fade page-account">
+			    <div class="page-content">
+			        <div class="row">
+			            <div class="col-md-3">
+			                <div class="widget widget-shadow text-center">
+			                    <div class="widget-header">
+			                        <div class="widget-header-content">
+			                            <a class="avatar avatar-lg" href="javascript:;">
+			                                <img src="${ctx}/admui/images/avatar.svg" alt="xiaxuan@admui_demo">
+			                            </a>
+			                            <h4 class="account-user">${Session.user.userCode!}</h4>
+			                            <p>上次登录：${Session.user.lastLoginTime!}</p>
+			                        </div>
+			                    </div>
+			                    <div class="widget-footer">
+			                        <div class="row no-space">
+			                            <div class="col-xs-6">
+			                                <strong class="account-stat-count">${Session.user.loginTotal!}</strong> <span>登录</span>
+			                            </div>
+			<!--                             <div class="col-xs-4"> -->
+			<!--                             </div> -->
+			                            <div class="col-xs-6">
+			                                <strong class="account-stat-count log-number">100+</strong> <span>日志</span>
+			                            </div>
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+			            <div class="col-md-9">
+			                <div class="panel">
+			                    <div class="panel-body nav-tabs-animate">
+			                        <ul class="nav nav-tabs nav-tabs-line tabList" role="tablist">
+			                            <li class="news active" role="presentation" id="account-log">
+			                                <a href="${ctx}/system/account/log" data-pjax="#accountContent" aria-expanded="false">
+			                                    <i class="icon fa-file-text-o" aria-hidden="true"></i> 日志
+			                                </a>
+			                            </li>
+			                            <li class="news " role="presentation" id="account-password">
+			                                <a href="${ctx}/system/account/password" data-pjax="#accountContent" aria-expanded="false">
+			                                    <i class="icon fa-key" aria-hidden="true"></i> 密码
+			                                </a>
+			                            </li>
+			                        </ul>
+			                        <div class="tab-content margin-top-15">
+			                            <div class="animation-slide-left tab-message active" id="accountContent">
+											<#nested />
+										</div>
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+		</div>
+	    <div class="page-loading vertical-align text-center">
+	        <div class="page-loader loader-default loader vertical-align-middle" data-type="default"></div>
+	    </div>
+	</main>
+	<#include "/commons/footer.html">
+	<!-- 布局 -->
+</body>
+<script src="${ctx}/admui/plugins/jquery-strength/jquery-strength.min.js"></script>
+<script src="${ctx}/admui/plugins/alertify-js/alertify.min.js"></script>
+<script>
+$(function(){
+	var url = window.location.href;
+	//li标签属性id
+	var tagId = "account-"+url.substring(url.lastIndexOf("/")+1);
+	var _item = $("#"+tagId);//当前li标签
+	_item.siblings('li').removeClass('active');
+    _item.addClass('active');
+	$("#"+tagId).find("a").click();
+	
+	//页标签上添加点击事件
+	$('.tabList').on('click', 'li', function () {
+	    var $item = $(this);
+	    $item.siblings('li').removeClass('active');
+	    $item.addClass('active');
+	});
+});
+</script>
+</html>
+</#macro>

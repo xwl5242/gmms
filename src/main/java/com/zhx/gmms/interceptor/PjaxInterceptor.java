@@ -21,11 +21,16 @@ public class PjaxInterceptor extends HandlerInterceptorAdapter {
 			//值为true表示pjax请求，这是重点
             boolean isPajx = Boolean.parseBoolean(request.getHeader("X-PJAX"));
             ModelMap model = modelAndView.getModelMap();
+            String uri = request.getRequestURI().toString();
             if (isPajx) {
             	//指定pjax请求时使用的模版
                 model.addAttribute("FP", "/layout/blank.html");
             }else{
-            	model.addAttribute("FP", "/layout/default.html");
+            	if("/system/account/log".equals(uri)||"/system/account/password".equals(uri)){
+            		model.addAttribute("FP", "/layout/subAccount.html");
+            	}else{
+            		model.addAttribute("FP", "/layout/default.html");
+            	}
             }
         }
 

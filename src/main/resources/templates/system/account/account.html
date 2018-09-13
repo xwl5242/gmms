@@ -27,7 +27,7 @@
 <!--                             <div class="col-xs-4"> -->
 <!--                             </div> -->
                             <div class="col-xs-6">
-                                <strong class="account-stat-count log-number">100+</strong> <span>日志</span>
+                                <strong class="account-stat-count log-number" ></strong> <span>日志</span>
                             </div>
                         </div>
                     </div>
@@ -80,6 +80,11 @@ $(function(){
 			$("#account-log > a").click();
 		}
 	}
+	//设置日志数量
+	$.get('${ctx}/log/logCount',{userId:'${Session.user.id}'},function(data){
+		if(data.success) $(".log-number").text(data.logcount);
+	},'json');
+	
 	//页标签上添加点击事件
 	$('.tabList').on('click', 'li', function () {
 	    var $item = $(this);

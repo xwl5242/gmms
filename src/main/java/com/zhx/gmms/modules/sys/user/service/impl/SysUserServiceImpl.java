@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zhx.gmms.modules.sys.log.service.SysLogService;
 import com.zhx.gmms.modules.sys.right.bean.SysRight;
 import com.zhx.gmms.modules.sys.right.service.SysRightService;
 import com.zhx.gmms.modules.sys.theme.bean.SysTheme;
@@ -36,6 +37,8 @@ public class SysUserServiceImpl implements SysUserService {
 	@Autowired
 	private SysThemeService sysThemeService;
 
+	@Autowired
+	private SysLogService logService;
 	/**
 	 * 获取用户list
 	 */
@@ -179,6 +182,22 @@ public class SysUserServiceImpl implements SysUserService {
 	@Transactional(rollbackFor=Exception.class)
 	public int removeUser(String userId) {
 		return sysUserDao.delete(Arrays.asList(userId));
+	}
+
+	/**
+	 * 主键获取用户信息
+	 */
+	@Override
+	public SysUser getUser(String id) {
+		return sysUserDao.get(id);
+	}
+
+	/**
+	 * 查询用户的日志数
+	 */
+	@Override
+	public int getLogCount(String id) {
+		return logService.findCount(id);
 	}
 
 //	@Override

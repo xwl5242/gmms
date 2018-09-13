@@ -17,6 +17,7 @@ import com.zhx.gmms.frame.Const;
 import com.zhx.gmms.modules.sys.theme.bean.SysTheme;
 import com.zhx.gmms.modules.sys.user.bean.SysUser;
 import com.zhx.gmms.modules.sys.user.service.SysUserService;
+import com.zhx.gmms.utils.DESUtils;
 
 /**
  * 用户controller
@@ -128,6 +129,31 @@ public class SysUserController extends BaseController {
 	@PostMapping("/updateUseStatus")
 	@ResponseBody
 	public String updateUseStatus(SysUser user) throws Exception{
+		int r = sysUserService.editUser(user);
+		return toJson(r==1);
+	}
+	
+	/**
+	 * 验证密码是否正确
+	 * @return
+	 * @throws Exception 
+	 */
+	@GetMapping("/validPassword")
+	@ResponseBody
+	public String validPassword(SysUser user) throws Exception{
+		SysUser cu = sysUserService.getUser(user.getId());
+		String cup = DESUtils.decrypt(cu.getPassword());
+		return toJsonKV(true, "valid", user.getPassword().equals(cup));
+	}
+	
+	/**
+	 * 用户修改密码
+	 * @throws Exception 
+	 */
+	@PostMapping("/updatePassword")
+	@ResponseBody
+	public String updatePassword(SysUser user) throws Exception{
+		user.setPassword(DESUtils.encrypt(user.getPassword()));
 		int r = sysUserService.editUser(user);
 		return toJson(r==1);
 	}

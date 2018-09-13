@@ -43,9 +43,20 @@ public class SysLogServiceImpl implements SysLogService {
 		return logDao.findPageList(wheres);
 	}
 
+	/**
+	 * 查询所有的用户
+	 */
 	@Override
 	public List<SysUser> findAllUser() {
 		return userService.findList(new SysUser());
+	}
+
+	/**
+	 * 查询日志数
+	 */
+	@Override
+	public int findCount(String userId) {
+		return logDao.findCount(userId);
 	}
 
 }

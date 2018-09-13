@@ -12,9 +12,16 @@ import com.zhx.gmms.modules.sys.log.bean.SysLog;
 public interface SysLogDao extends CrudDao<SysLog> {
 
 	/**
-	 * 
+	 * 分页查询日志信息
 	 * @return
 	 */
 	Page<SysLog> findPageList(Map<String,String> wheres);
+
+	/**
+	 * 查询用户的日志数
+	 * @param userId
+	 * @return
+	 */
+	int findCount(String userId);
 
 }

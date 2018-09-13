@@ -31,4 +31,10 @@ public interface SysLogService {
 	 */
 	Page<SysLog> findPageList(Map<String,String> wheres,int start, int limit, String dir);
 
+	/**
+	 * 查询用户日志数
+	 * @param userId
+	 * @return
+	 */
+	int findCount(String userId);
 }

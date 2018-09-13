@@ -73,6 +73,20 @@ public interface SysUserService {
 	 */
 	int removeUser(String userId) throws Exception;
 
+	/**
+	 * 主键获取用户信息
+	 * @param id
+	 * @return
+	 */
+	SysUser getUser(String id);
+
+	/**
+	 * 获取当前用户日志数
+	 * @param id
+	 * @return
+	 */
+	int getLogCount(String id);
+
 //	void initQuota();
 
 }

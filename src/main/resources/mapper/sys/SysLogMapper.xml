@@ -31,6 +31,11 @@
   	<if test="userId!=null and userId!=''"> and creator=#{userId}</if>
   </select>
   
+  <!-- 查询用户的日志数 -->
+  <select id="findCount" parameterType="java.lang.String" resultType="int">
+  	select count(1) from sys_log where creator=#{userId}
+  </select>
+  
   <delete id="delete" parameterType="java.lang.String" >
     delete from sys_log
     where ID = #{id,jdbcType=VARCHAR}

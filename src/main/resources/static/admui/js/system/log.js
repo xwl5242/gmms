@@ -45,7 +45,7 @@
                         param += '&' + searchData;
                     }
 
-                    if ($pageContent.find('#accountLog').length > 0) {
+                    if ($pageContent.find('#account-log').length > 0) {
                         userId = $('#admui-signOut').data('user');
                         param += '&userId=' + userId;
                     }
